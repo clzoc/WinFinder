@@ -1,0 +1,129 @@
+﻿<Window x:Class="WpfApp2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:local="clr-namespace:WpfApp2" 
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        Name="Root"              
+        Title="MainWindow" 
+        Height="802" 
+        Width="1202" 
+        WindowStyle="None"  
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Grid Loaded="ContentView">
+        <Grid.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="2" Color="Black"/>
+        </Grid.Effect>
+        <Path x:Name="ClipPath" Data="{Binding ElementName=Root, Path=Info}"/>
+        <Grid x:Name="LayoutRoot" Clip="{Binding ElementName=ClipPath, Path=Data}" ClipToBounds="True" Margin="0,0,0,0" Background="#ffffff">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="LayoutNodeTop" Grid.Row="0" Background="#EEEEEE" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+                <StackPanel x:Name="Traffic" Margin="9,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                    <Button Click="Window_Close" Margin="0,0,15,0" Width="30" Height="30" Background="#ffffff" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="30" Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <svgc:SvgViewbox x:Name="Red">
+                            <svgc:SvgViewbox.Effect>
+                                <DropShadowEffect Direction="315" ShadowDepth="5" Color="#FC5753" Opacity="0.8" BlurRadius="25"/>
+                            </svgc:SvgViewbox.Effect>
+                            <svgc:SvgViewbox.Style>
+                                <Style TargetType="{x:Type svgc:SvgViewbox}">
+                                    <Setter Property="Source" Value="/icon/Close_Button.svg"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=Traffic, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Source" Value="/icon/Close_Button_Hover.svg"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </svgc:SvgViewbox.Style>
+                        </svgc:SvgViewbox>
+                    </Button>
+                    <Button Click="Window_Minim" Margin="0,0,15,0" Width="30" Height="30" Background="#ffffff" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="30" Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <svgc:SvgViewbox x:Name="Yellow">
+                            <svgc:SvgViewbox.Effect>
+                                <DropShadowEffect Direction="315" ShadowDepth="5" Color="#FDBC40" Opacity="0.8" BlurRadius="25"/>
+                            </svgc:SvgViewbox.Effect>
+                            <svgc:SvgViewbox.Style>
+                                <Style TargetType="{x:Type svgc:SvgViewbox}">
+                                    <Setter Property="Source" Value="/icon/Minimize_Button.svg"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=Traffic, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Source" Value="/icon/Minimize_Button_Hover.svg"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </svgc:SvgViewbox.Style>
+                        </svgc:SvgViewbox>
+                    </Button>
+                    <Button Click="Window_Zoom" Width="30" Height="30" Background="#ffffff" BorderThickness="0" >
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="30" Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <svgc:SvgViewbox x:Name="Green">
+                            <svgc:SvgViewbox.Effect>
+                                <DropShadowEffect Direction="315" ShadowDepth="5" Color="#36C84B" Opacity="0.8" BlurRadius="25"/>
+                            </svgc:SvgViewbox.Effect>
+                            <svgc:SvgViewbox.Style>
+                                <Style TargetType="{x:Type svgc:SvgViewbox}">
+                                    <Setter Property="Source" Value="/icon/Maximize_Button.svg"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=Traffic, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Source" Value="{Binding Path=ZoomButton, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </svgc:SvgViewbox.Style>
+                        </svgc:SvgViewbox>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Background="#DEDEDE">
+                    <Path x:Name="SideClip" Data="{Binding ElementName=Root, Path=SideClipInfo}"/>
+                    <StackPanel x:Name="SideBar" Margin="10,0,10,0" Orientation="Vertical"/>
+                </Grid>
+                <Grid Grid.Column="1" Background="#FFFFFF">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="1" Fill="#C9C9C8"/>
+                    <Path x:Name="FileClip" Data="{Binding ElementName=Root, Path=ClipInfo}"/>
+                    <ScrollViewer Grid.Column="1">
+                        <StackPanel x:Name="FileList" Grid.Column="0" Margin="2,0,0,2" Orientation="Vertical"/>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
