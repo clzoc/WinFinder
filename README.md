@@ -1,7 +1,7 @@
 # WinFinder
 A file manager for Windows system with MacOS style appearance, based on WPF.
 
-![屏幕截图 2024-05-09 162745](https://github.com/clzoc/WinFinder/assets/62627722/02bc7803-c556-4b08-9884-bba171a928b4)
+![屏幕截图 2024-05-09 162745](https://github.com/clzoc/WinFinder/assets/62627722/270582ca-4cfb-41a4-9b84-c5404230e93b)
 
 Introducing a revolutionary file manager for Windows users that brings the sophistication and elegance of macOS to the familiar Windows environment. This application, developed using Windows Presentation Foundation (WPF), is a testament to the seamless integration of form and function, aiming to provide users with the best of both worlds.
 **Efficiency Meets Aesthetics: The Ultimate File Manager**
