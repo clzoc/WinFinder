@@ -19,8 +19,9 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Collections;
 using SharpVectors.Converters;
+using static System.Net.WebRequestMethods;
 
-namespace WpfApp2 {
+namespace WinFinder {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
@@ -35,7 +36,7 @@ namespace WpfApp2 {
             Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
             //throw new NotImplementedException();
         }
-        private readonly double squircle_radius = 20;
+        private static readonly double squircle_radius = 20;
 
         private string info = "";
         public string Info {
@@ -90,8 +91,8 @@ namespace WpfApp2 {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Window_Corner(double height, double width, double radius, double bias) {
-            width -= 2;
-            height -= 2;
+            height -= bias * 2; width -= bias * 2;
+
             double f5 = 63.0000;
             double f4 = 36.7519;
             double f3 = 23.6278;
@@ -149,13 +150,12 @@ namespace WpfApp2 {
                 Height = SystemParameters.WorkArea.Height;
                 Width = SystemParameters.WorkArea.Width;
                 //Info = Window_Corner(Height, Width, squircle_radius);
-                Top = 1;
+                Top = 0;
                 Left = 0;
                 IsZoom = true;
                 ZoomButton = "/icon/Maximize_Button_Hover_Zoom.svg";
 
-                SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 13, 0);
-                ClipInfo = Window_Corner(50, FileList.ActualWidth, 13, 0);
+                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
             }
             else {
                 double h = Height;
@@ -168,17 +168,14 @@ namespace WpfApp2 {
                 IsZoom = false;
                 ZoomButton = "/icon/Maximize_Button_Hover.svg";
 
-                SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 13, 0);
-                ClipInfo = Window_Corner(50, FileList.ActualWidth, 13, 0);
+                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
             }
             //WindowState = WindowState.Maximized;
-        }
+        }        
 
         private void ContentView(object sender, RoutedEventArgs e) {
-            SideClipInfo = Window_Corner(40, SideBar.ActualWidth - 10, 11, 5);
-            ClipInfo = Window_Corner(50, FileList.ActualWidth, 13, 0);
+            SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 11, 5);            
 
-            string[] color = { "#FFFFFF", "#F4F6F5" };
             string[] side = { "tsunami", "桌面", "下载", "文稿", "图片", "影片", "音乐" };
             string[] icon = {
                 "/icon/folder.badge.person.crop.svg",
@@ -204,7 +201,7 @@ namespace WpfApp2 {
                     Binding = new Binding("IsMouseOver") { Source = t },
                     Value = true,
                 };
-                d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C9C9C7")) });
+                d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9ABAE8")) });
                 Style st = new Style();
                 st.Triggers.Add(d);
                 t.Style = st;
@@ -232,85 +229,151 @@ namespace WpfApp2 {
                 _ = SideBar.Children.Add(t);
             }
 
-            DirectoryInfo di = new DirectoryInfo(@"C:\\");
+            DirectoryInfo di = new DirectoryInfo(@"C:\");
             FileInfo[] files = di.GetFiles();
             DirectoryInfo[] dics = di.GetDirectories();
 
-            int num = files.Length + dics.Length;
+            LoadFileList(FileList, files, dics, FileClip);            
+        }
 
+        private static readonly double fileHeight = 40;
+
+        private void LoadFileList(StackPanel s, FileInfo[] f, DirectoryInfo[] d, System.Windows.Shapes.Path p) {
+            ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
+            string[] color = { "#FFFFFF", "#F4F6F5" };
+            int num = f.Length + d.Length;
+            
             for (int i = 0; i < num; i++) {
                 int c = i & 1;
 
-                Grid f = new Grid {
-                    Height = 50,
+                Grid g = new Grid {
+                    Height = fileHeight,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])),
+                    //Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])),
                     ColumnDefinitions = {
                         new ColumnDefinition {Width = new GridLength(50, GridUnitType.Pixel)},
-                        new ColumnDefinition {Width = new GridLength(3.0, GridUnitType.Star)},
+                        new ColumnDefinition {Width = new GridLength(3.5, GridUnitType.Star)},
                         new ColumnDefinition {Width = new GridLength(2.0, GridUnitType.Star)},
+                        new ColumnDefinition {Width = new GridLength(1.5, GridUnitType.Star)},
                         new ColumnDefinition {Width = new GridLength(1.0, GridUnitType.Star)},
                     },
                 };
                 Binding v = new Binding("Data") {
-                    Source = FileClip
+                    Source = p
                 };
 
-                f.SetBinding(ClipProperty, v);                                
+                g.SetBinding(ClipProperty, v);
 
-                SvgViewbox s = new SvgViewbox {
-                    Height = f.Height - 10,
+                DataTrigger da = new DataTrigger {
+                    Binding = new Binding("IsMouseOver") { Source = g },
+                    Value = true,
+                };
+                da.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9ABAE8")) });
+                Style st = new Style();
+                st.Triggers.Add(da);
+                st.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])) });
+                g.Style = st;
+
+                SvgViewbox svg = new SvgViewbox {
+                    Height = g.Height - 10,
                     Width = Height,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Margin = new Thickness(10, 0, 0, 0),
-                    Source = new Uri("/icon/Folder_Icon.svg", UriKind.Relative),                         
+                    Source = new Uri("/icon/Folder_Icon.svg", UriKind.Relative),
                 };
 
                 TextBlock fName = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 20,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(10, 0, 0, 0),
-                };
-                
-                TextBlock fDate = new TextBlock {
-                    FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 20,
+                    FontSize = 18,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(10, 0, 0, 0),
                 };
 
+                TextBlock fuName = new TextBlock {
+                    FontFamily = new FontFamily("LXGW WenKai Screen"),
+                    FontSize = 18,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 0, 0),
+                    Visibility = Visibility.Collapsed,
+                };
+
+                TextBlock fDate = new TextBlock {
+                    FontFamily = new FontFamily("LXGW WenKai Screen"),
+                    FontSize = 18,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 0, 0),
+                };
+
+                TextBlock fType = new TextBlock {
+                    FontFamily = new FontFamily("LXGW WenKai Screen"),
+                    FontSize = 18,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,                   
+                };
+
                 TextBlock fSize = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 20,
+                    FontSize = 18,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(0, 0, 10, 0),
                     HorizontalAlignment = HorizontalAlignment.Right,
                 };
 
-                if (i < dics.Length) {
-                    fName.Text = dics[i].Name;
-                    fDate.Text = dics[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
-                } else {
-                    fName.Text = files[i - dics.Length].Name;
-                    fDate.Text = files[i - dics.Length].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
-                    fSize.Text = (files[i - dics.Length].Length).ToString();                    
+                if (i < d.Length) {                                        
+                    g.MouseDown += MDCHandler;
+                    fName.Text = d[i].Name;                    
+                    fDate.Text = d[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
+                    fType.Text = "文件夹";
+                    fuName.Text = d[i].FullName;
+                }
+                else {
+                    fName.Text = f[i - d.Length].Name;
+                    fDate.Text = f[i - d.Length].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
+                    fType.Text = $"{f[i - d.Length].Extension.Replace(".", "").ToUpper()} 文件";
+                    fSize.Text = ByteToValue(f[i - d.Length].Length);
                 }
 
-                _ = f.Children.Add(s);
-                _ = f.Children.Add(fName);
-                _ = f.Children.Add(fDate);
-                _ = f.Children.Add(fSize);
+                _ = g.Children.Add(svg);
+                _ = g.Children.Add(fName);
+                _ = g.Children.Add(fDate);
+                _ = g.Children.Add(fSize);
+                _ = g.Children.Add(fType);
 
-                s.SetValue(Grid.ColumnProperty, 0);
+                _ = g.Children.Add(fuName);
+
+                svg.SetValue(Grid.ColumnProperty, 0);
                 fName.SetValue(Grid.ColumnProperty, 1);
                 fDate.SetValue(Grid.ColumnProperty, 2);
-                fSize.SetValue(Grid.ColumnProperty, 3);
+                fType.SetValue(Grid.ColumnProperty, 3);
+                fSize.SetValue(Grid.ColumnProperty, 4);
 
-                _ = FileList.Children.Add(f);
+                _ = s.Children.Add(g);
             }
         }
 
+        private void MDCHandler(object sender, MouseButtonEventArgs e) {
+            Grid g = sender as Grid;
+            TextBlock d = g.Children[5] as TextBlock; 
+            DirectoryInfo di = new DirectoryInfo(@d.Text);
+            FileInfo[] fs = di.GetFiles();
+            DirectoryInfo[] dics = di.GetDirectories();
+            FileList.Children.Clear();
+            LoadFileList(FileList, fs, dics, FileClip);
+        }
+
+        private static readonly string[] suffixes = new string[] { " B", " KB", " MB", " GB", " TB", " PB" };
+        public string ByteToValue(long number) {
+            double last = 1;
+            for (int i = 0; i < suffixes.Length; i++) {
+                double current = Math.Pow(1024, i + 1);
+                double temp = number / current;
+                if (temp < 1) {
+                    return (number / last).ToString("n2") + suffixes[i];
+                }
+                last = current;
+            }
+            return number.ToString();
+        }
     }
 }
