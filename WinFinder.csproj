@@ -188,16 +188,18 @@
     <Resource Include="icon\laptopcomputer.svg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="develop.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="favicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="ico\deg.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="deg.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\left.svg" />
+    <Resource Include="icon\right.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\file.svg" />
+    <Resource Include="icon\folder.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Web.WebView2.1.0.2420.47\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.2420.47\build\Microsoft.Web.WebView2.targets')" />

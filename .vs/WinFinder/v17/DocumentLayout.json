@@ -3,18 +3,18 @@
   "WorkspaceRootPath": "C:\\Action\\wpf\\WpfApp2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|WinFinder||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
@@ -55,8 +55,7 @@
               "ToolTip": "C:\\Action\\wpf\\WpfApp2\\App.xaml",
               "RelativeToolTip": "App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-05-09T12:23:21.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-09T12:23:21.631Z"
             },
             {
               "$type": "Document",
@@ -78,7 +77,7 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Action\\wpf\\WpfApp2\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AQIAAPMAAAAAAAAAAAAAACkBAAA2AAAA",
+              "ViewState": "AQIAADYBAAAAAAAAAAD4v0sBAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-09T08:58:49.134Z",
               "EditorCaption": ""

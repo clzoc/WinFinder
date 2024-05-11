@@ -20,6 +20,8 @@ using System.Collections.ObjectModel;
 using System.Collections;
 using SharpVectors.Converters;
 using static System.Net.WebRequestMethods;
+using SharpVectors.Dom;
+using System.Windows.Shell;
 
 namespace WinFinder {
     /// <summary>
@@ -155,7 +157,7 @@ namespace WinFinder {
                 IsZoom = true;
                 ZoomButton = "/icon/Maximize_Button_Hover_Zoom.svg";
 
-                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
+                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 15, 0);
             }
             else {
                 double h = Height;
@@ -168,13 +170,25 @@ namespace WinFinder {
                 IsZoom = false;
                 ZoomButton = "/icon/Maximize_Button_Hover.svg";
 
-                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
+                ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 15, 0);
             }
             //WindowState = WindowState.Maximized;
         }        
 
         private void ContentView(object sender, RoutedEventArgs e) {
-            SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 11, 5);            
+            PathBack.Height = 35;
+            PathBack.Width = 35;
+            PathBack.HorizontalAlignment = HorizontalAlignment.Left;
+            PathBack.VerticalAlignment = VerticalAlignment.Center;
+            PathBack.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 0));
+
+            PathMove.Height = 35;
+            PathMove.Width = 35;
+            PathMove.HorizontalAlignment = HorizontalAlignment.Left;
+            PathMove.VerticalAlignment = VerticalAlignment.Center;
+            PathMove.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 0));
+
+            SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 15, 5);            
 
             string[] side = { "tsunami", "桌面", "下载", "文稿", "图片", "影片", "音乐" };
             string[] icon = {
@@ -239,10 +253,10 @@ namespace WinFinder {
         private static readonly double fileHeight = 40;
 
         private void LoadFileList(StackPanel s, FileInfo[] f, DirectoryInfo[] d, System.Windows.Shapes.Path p) {
-            ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 13.8 * fileHeight / 50, 0);
+            ClipInfo = Window_Corner(fileHeight, FileList.ActualWidth, 15, 0);
             string[] color = { "#FFFFFF", "#F4F6F5" };
-            int num = f.Length + d.Length;
-            
+            int num = f.Length + d.Length;            
+
             for (int i = 0; i < num; i++) {
                 int c = i & 1;
 
@@ -268,31 +282,22 @@ namespace WinFinder {
                     Binding = new Binding("IsMouseOver") { Source = g },
                     Value = true,
                 };
-                da.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9ABAE8")) });
+                da.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4D5DB")) });
                 Style st = new Style();
                 st.Triggers.Add(da);
                 st.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])) });
-                g.Style = st;
-
-                SvgViewbox svg = new SvgViewbox {
-                    Height = g.Height - 10,
-                    Width = Height,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Margin = new Thickness(10, 0, 0, 0),
-                    Source = new Uri("/icon/Folder_Icon.svg", UriKind.Relative),
-                };
+                g.Style = st;                
 
                 TextBlock fName = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(10, 0, 0, 0),
                 };
 
                 TextBlock fuName = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(10, 0, 0, 0),
                     Visibility = Visibility.Collapsed,
@@ -300,41 +305,56 @@ namespace WinFinder {
 
                 TextBlock fDate = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(10, 0, 0, 0),
                 };
 
                 TextBlock fType = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,                   
                 };
 
                 TextBlock fSize = new TextBlock {
                     FontFamily = new FontFamily("LXGW WenKai Screen"),
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(0, 0, 10, 0),
                     HorizontalAlignment = HorizontalAlignment.Right,
                 };
 
-                if (i < d.Length) {                                        
-                    g.MouseDown += MDCHandler;
+                SvgViewbox fileIcon = new SvgViewbox {
+                    Height = fileHeight - 15,
+                    Width = Height,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(15,0,0,0)
+                };
+
+                if (i < d.Length) {
+                    g.MouseLeftButtonDown += MDCHandler;
                     fName.Text = d[i].Name;                    
                     fDate.Text = d[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
                     fType.Text = "文件夹";
+                    fSize.Text = "— —";
                     fuName.Text = d[i].FullName;
+
+                    fileIcon.Source = new Uri("/icon/folder.svg", UriKind.Relative);
                 }
                 else {
+                    g.MouseDown += CTOHandler;
                     fName.Text = f[i - d.Length].Name;
                     fDate.Text = f[i - d.Length].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
                     fType.Text = $"{f[i - d.Length].Extension.Replace(".", "").ToUpper()} 文件";
                     fSize.Text = ByteToValue(f[i - d.Length].Length);
+                    fuName.Text = f[i - d.Length].FullName;
+
+                    fileIcon.Source = new Uri("/icon/file.svg", UriKind.Relative);
                 }
 
-                _ = g.Children.Add(svg);
+                _ = g.Children.Add(fileIcon);
                 _ = g.Children.Add(fName);
                 _ = g.Children.Add(fDate);
                 _ = g.Children.Add(fSize);
@@ -342,7 +362,7 @@ namespace WinFinder {
 
                 _ = g.Children.Add(fuName);
 
-                svg.SetValue(Grid.ColumnProperty, 0);
+                fileIcon.SetValue(Grid.ColumnProperty, 0);
                 fName.SetValue(Grid.ColumnProperty, 1);
                 fDate.SetValue(Grid.ColumnProperty, 2);
                 fType.SetValue(Grid.ColumnProperty, 3);
@@ -352,14 +372,23 @@ namespace WinFinder {
             }
         }
 
+        private void CTOHandler(object sender, MouseButtonEventArgs e) {
+            Grid g = sender as Grid;
+            TextBlock d = g.Children[5] as TextBlock;
+            Process.Start(d.Text);
+            GC.Collect();
+        }
+
         private void MDCHandler(object sender, MouseButtonEventArgs e) {
             Grid g = sender as Grid;
             TextBlock d = g.Children[5] as TextBlock; 
             DirectoryInfo di = new DirectoryInfo(@d.Text);
+            upPath = di.Parent.FullName;
             FileInfo[] fs = di.GetFiles();
             DirectoryInfo[] dics = di.GetDirectories();
-            FileList.Children.Clear();
+            FileList.Children.Clear();           
             LoadFileList(FileList, fs, dics, FileClip);
+            GC.Collect();
         }
 
         private static readonly string[] suffixes = new string[] { " B", " KB", " MB", " GB", " TB", " PB" };
@@ -374,6 +403,19 @@ namespace WinFinder {
                 last = current;
             }
             return number.ToString();
+        }
+
+        private string upPath = @"C:\";
+        private void Window_Back(object sender, RoutedEventArgs e) {
+            DirectoryInfo di = new DirectoryInfo(@upPath);
+            if (upPath != @"C:\") {
+                upPath = di.Parent.FullName;
+            }
+            FileInfo[] fs = di.GetFiles();
+            DirectoryInfo[] dics = di.GetDirectories();
+            FileList.Children.Clear();
+            LoadFileList(FileList, fs, dics, FileClip);
+            GC.Collect();
         }
     }
 }

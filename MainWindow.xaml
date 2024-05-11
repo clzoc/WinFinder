@@ -21,12 +21,12 @@
         <Path x:Name="ClipPath" Data="{Binding ElementName=Root, Path=Info}"/>
         <Grid x:Name="LayoutRoot" Clip="{Binding ElementName=ClipPath, Path=Data}" ClipToBounds="True" Margin="0,0,0,0" Background="#ffffff">
             <Grid.RowDefinitions>
-                <RowDefinition Height="45"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="LayoutNodeTop" Grid.Row="0" Background="#EEEEEE" MouseLeftButtonDown="Window_MouseLeftButtonDown">
-                <StackPanel x:Name="Traffic" Margin="9,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                <StackPanel x:Name="Traffic" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
                     <Button Click="Window_Close" Margin="0,0,15,0" Width="30" Height="30" Background="#ffffff" BorderThickness="0">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -100,6 +100,12 @@
                         </svgc:SvgViewbox>
                     </Button>
                 </StackPanel>
+                <Button x:Name="PathBack" Click="Window_Back" Margin="205,0,0,0" BorderThickness="0">
+                    <svgc:SvgViewbox Height="20" Width="20" Source="/icon/left.svg"/>
+                </Button>
+                <Button x:Name="PathMove" Margin="245,0,0,0" BorderThickness="0">
+                    <svgc:SvgViewbox Height="20" Width="20" Source="/icon/right.svg"/>
+                </Button>
             </Grid>
 
             <Grid Grid.Row="1">
@@ -118,7 +124,7 @@
                     </Grid.ColumnDefinitions>
                     <Rectangle Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="1" Fill="#C9C9C8"/>
                     <Path x:Name="FileClip" Data="{Binding ElementName=Root, Path=ClipInfo}"/>
-                    <ScrollViewer Grid.Column="1">
+                    <ScrollViewer Grid.Column="1" Margin="0,0,0,5">
                         <StackPanel x:Name="FileList" Grid.Column="0" Orientation="Vertical"/>
                     </ScrollViewer>
                 </Grid>
