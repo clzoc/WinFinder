@@ -3,3 +3,7 @@ Windows File Manager with MacOS Style Design, include continuous curvature corne
 It looks like the following picture:
 ![image](https://github.com/clzoc/WinFinder/assets/62627722/53717e5a-61da-4d74-8776-37acb4cfcbb0)
 
+TODO List:
+  1. Virtual Scroll.
+  2. UserControl Memory Reuse.
+  3. Multi View like List, Grid ......
