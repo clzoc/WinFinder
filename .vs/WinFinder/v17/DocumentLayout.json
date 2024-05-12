@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Action\\wpf\\WpfApp2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
@@ -11,15 +11,18 @@
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\scrollbar.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:scrollbar.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|WinFinder||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|WinFinder||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\c4da593b2f9ba980f87d85845369802be65b8198163d3e361792da11e899aed6\\Array.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\scrollbar.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:scrollbar.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\app.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
@@ -28,6 +31,9 @@
     {
       "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\scrollviewer.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:scrollviewer.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
     }
   ],
   "DocumentGroupContainers": [
@@ -37,7 +43,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,7 +51,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
+              "Title": "Array.cs",
+              "DocumentMoniker": "C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\c4da593b2f9ba980f87d85845369802be65b8198163d3e361792da11e899aed6\\Array.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\c4da593b2f9ba980f87d85845369802be65b8198163d3e361792da11e899aed6\\Array.cs",
+              "ToolTip": "C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\c4da593b2f9ba980f87d85845369802be65b8198163d3e361792da11e899aed6\\Array.cs [\u53EA\u8BFB]",
+              "RelativeToolTip": "..\\..\\..\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\c4da593b2f9ba980f87d85845369802be65b8198163d3e361792da11e899aed6\\Array.cs [\u53EA\u8BFB]",
+              "ViewState": "AQIAAPYBAAAAAAAAAAD4vwUCAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-12T11:18:56.987Z",
+              "EditorCaption": " [\u53EA\u8BFB]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ScrollBar.xaml",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\ScrollBar.xaml",
               "RelativeDocumentMoniker": "ScrollBar.xaml",
@@ -57,7 +76,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "ScrollViewer.xaml",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\ScrollViewer.xaml",
               "RelativeDocumentMoniker": "ScrollViewer.xaml",
@@ -69,7 +88,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\App.xaml.cs",
               "RelativeDocumentMoniker": "App.xaml.cs",
@@ -81,14 +100,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "WinFinder",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\WinFinder.csproj",
               "RelativeDocumentMoniker": "WinFinder.csproj",
               "ToolTip": "C:\\Action\\wpf\\WpfApp2\\WinFinder.csproj",
               "RelativeToolTip": "WinFinder.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-10T07:53:05.501Z"
+              "WhenOpened": "2024-05-10T07:53:05.501Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -122,7 +142,7 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Action\\wpf\\WpfApp2\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AQIAAMQBAAAAAAAAAAAswLYBAAAhAAAA",
+              "ViewState": "AQIAADcBAAAAAAAAAAAswFYBAAAsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-09T08:58:49.134Z",
               "EditorCaption": ""

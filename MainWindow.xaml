@@ -101,9 +101,45 @@
                     </Button>
                 </StackPanel>
                 <Button x:Name="PathBack" Click="Window_Back" Margin="205,0,0,0" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#9ABAE8"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <svgc:SvgViewbox Height="20" Width="20" Source="/icon/left.svg"/>
                 </Button>
                 <Button x:Name="PathMove" Click="Window_Retu" Margin="245,0,0,0" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#9ABAE8"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <svgc:SvgViewbox Height="20" Width="20" Source="/icon/right.svg"/>
                 </Button>
             </Grid>
@@ -123,11 +159,11 @@
                 <Grid Grid.Column="1" Background="#FFFFFF">
                     <Path x:Name="FileClip" Data="{Binding ElementName=Root, Path=ClipInfo}"/>
 
-                    <Grid x:Name="RefGrid" Margin="0,0,24,0">
+                    <Grid x:Name="RefGrid" Margin="0,0,20,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="5*"/>
                             <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="120"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0" x:Name="late0"/>
@@ -135,29 +171,32 @@
                         <Grid Grid.Column="2" x:Name="late2"/>
                         <Grid Grid.Column="3" x:Name="late3"/>
                     </Grid>
- 
-                    <ListView Name="FILEINFOMATION" BorderThickness="0" FontSize="16" AlternationCount="2" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="2" VirtualizingPanel.CacheLengthUnit="Page">
+
+                    <ListView Name="FILEINFOMATION" Padding="5,0,0,0" GridViewColumnHeader.Click="GridViewColumnHeader_Click"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" FontSize="14" AlternationCount="2" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="2" VirtualizingPanel.CacheLengthUnit="Page">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
-                                <!--<Setter Property="Template">
+                                <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                            <!--<Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                                 <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </Border>-->
+                                            <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                                                <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                             </Border>
                                         </ControlTemplate>
                                     </Setter.Value>
-                                </Setter>-->
+                                </Setter>
+                                <Setter Property="Margin" Value="0,0,0,0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Height" Value="45"/>
+                                <Setter Property="Height" Value="25"/>
                                 <Setter Property="Foreground" Value="#000000"/>
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="Clip" Value="{Binding Data, ElementName=FileClip}"/>
-                                <Setter Property="Margin" Value="5,0,0,0"/>
                                 <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                                 <Style.Triggers>
                                     <Trigger Property="ListView.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value="#F4F6F5"/>
+                                        <Setter Property="Background" Value="#D4D5DB"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#9ABAE8"/>
@@ -165,40 +204,51 @@
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter Property="Background" Value="#9ABAE8"/>
                                     </Trigger>
-                                   
                                 </Style.Triggers>
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="名称" Width="{Binding ActualWidth, ElementName=late0}">
+                                <GridViewColumn Width="{Binding ActualWidth, ElementName=late0}">
+                                    <GridViewColumnHeader Height="45" HorizontalContentAlignment="Left" Background="Transparent">
+                                        <TextBlock Text="名称" Margin="20,0,0,0" FontWeight="Bold"/>
+                                    </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <svgc:SvgViewbox Height="30" Margin="10,0,10,0" Source="/icon/file.svg"/>
+                                                <svgc:SvgViewbox Height="15" Margin="10,0,10,0" Source="/icon/file.svg"/>
                                                 <TextBlock Text="{Binding X0}" TextAlignment="Left" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="日期" Width="{Binding ActualWidth, ElementName=late1}">
+                                <GridViewColumn Width="{Binding ActualWidth, ElementName=late1}">
+                                    <GridViewColumnHeader Height="45" HorizontalContentAlignment="Left" Background="Transparent">
+                                        <TextBlock Text="日期" Margin="15,0,0,0" FontWeight="Bold"/>
+                                    </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding X1}" TextAlignment="Center"/>
+                                            <TextBlock Text="{Binding X1}" Margin="5,0,0,0" TextAlignment="Left" Opacity="0.6"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="类型" Width="{Binding ActualWidth, ElementName=late2}">
+                                <GridViewColumn Width="{Binding ActualWidth, ElementName=late2}">
+                                    <GridViewColumnHeader Height="45" HorizontalContentAlignment="Left" Background="Transparent">
+                                        <TextBlock Text="类型" Margin="15,0,0,0" FontWeight="Bold"/>
+                                    </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding X2}" TextAlignment="Center"/>
+                                            <TextBlock Text="{Binding X2}" Margin="5,0,0,0" TextAlignment="Left" Opacity="0.6"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="大小" Width="{Binding ActualWidth, ElementName=late3}">
+                                <GridViewColumn Width="{Binding ActualWidth, ElementName=late3}">
+                                    <GridViewColumnHeader Height="45" HorizontalContentAlignment="Right" Background="Transparent">
+                                        <TextBlock Text="大小" Margin="0,0,10,0" FontWeight="Bold"/>
+                                    </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding X3}" TextAlignment="Right"/>
+                                            <TextBlock Text="{Binding X3}" Margin="0,0,10,0" TextAlignment="Right" Opacity="0.6"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

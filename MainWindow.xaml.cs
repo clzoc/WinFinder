@@ -167,7 +167,7 @@ namespace WinFinder {
                 ZoomButton = icon[isZoom];
 
                 Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 15, 0);
+                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 10, 0);
             } else {
                 double h = Height;
                 double w = Width;
@@ -179,14 +179,15 @@ namespace WinFinder {
                 ZoomButton = icon[isZoom];
 
                 Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 15, 0);
+                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 10, 0);
             }
             //WindowState = WindowState.Maximized;
         }
 
+        private static readonly double fileHeight = 25;
         private void ContentView(object sender, RoutedEventArgs e) {
             Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-            ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 15, 0);
+            ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 10, 0);
 
             PathBack.Height = 35;
             PathBack.Width = 35;
@@ -262,146 +263,6 @@ namespace WinFinder {
             //LoadFileList(FileList, files, dics, FileClip);
         }
 
-        private static readonly double fileHeight = 45;
-
-        //private void LoadFileList(StackPanel s, FileInfo[] f, DirectoryInfo[] d, System.Windows.Shapes.Path p) {
-        //    ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 15, 0);
-        //    string[] color = { "#FFFFFF", "#F4F6F5" };
-        //    int num = f.Length + d.Length;
-
-        //    for (int i = 0; i < num; i++) {
-        //        int c = i & 1;
-
-        //        Grid g = new Grid {
-        //            Height = fileHeight,
-        //            HorizontalAlignment = HorizontalAlignment.Stretch,
-        //            //Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])),
-        //            ColumnDefinitions = {
-        //                new ColumnDefinition {Width = new GridLength(50, GridUnitType.Pixel)},
-        //                new ColumnDefinition {Width = new GridLength(3.5, GridUnitType.Star)},
-        //                new ColumnDefinition {Width = new GridLength(2.0, GridUnitType.Star)},
-        //                new ColumnDefinition {Width = new GridLength(1.5, GridUnitType.Star)},
-        //                new ColumnDefinition {Width = new GridLength(1.0, GridUnitType.Star)},
-        //            },
-        //        };
-        //        Binding v = new Binding("Data") {
-        //            Source = p
-        //        };
-
-        //        g.SetBinding(ClipProperty, v);
-
-        //        DataTrigger da = new DataTrigger {
-        //            Binding = new Binding("IsMouseOver") { Source = g },
-        //            Value = true,
-        //        };
-        //        da.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D4D5DB")) });
-        //        Style st = new Style();
-        //        st.Triggers.Add(da);
-        //        st.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color[c])) });
-        //        g.Style = st;
-
-        //        TextBlock fName = new TextBlock {
-        //            FontFamily = new FontFamily("LXGW WenKai Screen"),
-        //            FontSize = 16,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            Margin = new Thickness(10, 0, 0, 0),
-        //        };
-
-        //        TextBlock fuName = new TextBlock {
-        //            FontFamily = new FontFamily("LXGW WenKai Screen"),
-        //            FontSize = 16,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            Margin = new Thickness(10, 0, 0, 0),
-        //            Visibility = Visibility.Collapsed,
-        //        };
-
-        //        TextBlock fDate = new TextBlock {
-        //            FontFamily = new FontFamily("LXGW WenKai Screen"),
-        //            FontSize = 16,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            Margin = new Thickness(10, 0, 0, 0),
-        //        };
-
-        //        TextBlock fType = new TextBlock {
-        //            FontFamily = new FontFamily("LXGW WenKai Screen"),
-        //            FontSize = 16,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            HorizontalAlignment = HorizontalAlignment.Center,
-        //        };
-
-        //        TextBlock fSize = new TextBlock {
-        //            FontFamily = new FontFamily("LXGW WenKai Screen"),
-        //            FontSize = 16,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            Margin = new Thickness(0, 0, 10, 0),
-        //            HorizontalAlignment = HorizontalAlignment.Right,
-        //        };
-
-        //        SvgViewbox fileIcon = new SvgViewbox {
-        //            Height = fileHeight - 15,
-        //            Width = Height,
-        //            VerticalAlignment = VerticalAlignment.Center,
-        //            HorizontalAlignment = HorizontalAlignment.Center,
-        //            Margin = new Thickness(15, 0, 0, 0)
-        //        };
-
-        //        if (i < d.Length) {
-        //            g.MouseLeftButtonDown += MDCHandler;
-        //            fName.Text = d[i].Name;
-        //            fDate.Text = d[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
-        //            fType.Text = "文件夹";
-        //            fSize.Text = "— —";
-        //            fuName.Text = d[i].FullName;
-
-        //            fileIcon.Source = new Uri("/icon/folder.svg", UriKind.Relative);
-        //        } else {
-        //            g.MouseLeftButtonDown += CTOHandler;
-        //            fName.Text = f[i - d.Length].Name;
-        //            fDate.Text = f[i - d.Length].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss");
-        //            fType.Text = $"{f[i - d.Length].Extension.Replace(".", "").ToUpper()} 文件";
-        //            fSize.Text = ByteToValue(f[i - d.Length].Length);
-        //            fuName.Text = f[i - d.Length].FullName;
-
-        //            fileIcon.Source = new Uri("/icon/file.svg", UriKind.Relative);
-        //        }
-
-        //        _ = g.Children.Add(fileIcon);
-        //        _ = g.Children.Add(fName);
-        //        _ = g.Children.Add(fDate);
-        //        _ = g.Children.Add(fSize);
-        //        _ = g.Children.Add(fType);
-
-        //        _ = g.Children.Add(fuName);
-
-        //        fileIcon.SetValue(Grid.ColumnProperty, 0);
-        //        fName.SetValue(Grid.ColumnProperty, 1);
-        //        fDate.SetValue(Grid.ColumnProperty, 2);
-        //        fType.SetValue(Grid.ColumnProperty, 3);
-        //        fSize.SetValue(Grid.ColumnProperty, 4);
-
-        //        _ = s.Children.Add(g);
-        //    }
-        //}
-
-        //private void CTOHandler(object sender, MouseButtonEventArgs e) {
-        //    Grid g = sender as Grid;
-        //    TextBlock d = g.Children[5] as TextBlock;
-        //    Process.Start(d.Text);
-        //    GC.Collect();
-        //}
-
-        //private void MDCHandler(object sender, MouseButtonEventArgs e) {
-        //    Grid g = sender as Grid;
-        //    TextBlock d = g.Children[5] as TextBlock;
-        //    DirectoryInfo di = new DirectoryInfo(@d.Text);
-        //    upPath = di.Parent.FullName;
-        //    FileInfo[] fs = di.GetFiles();
-        //    DirectoryInfo[] dics = di.GetDirectories();
-        //    FileList.Children.Clear();
-        //    LoadFileList(FileList, fs, dics, FileClip);
-        //    GC.Collect();
-        //}
-
         private static readonly string[] suffixes = new string[] { " B", " KB", " MB", " GB", " TB", " PB" };
         public string ByteToValue(long number) {
             double last = 1;
@@ -470,6 +331,46 @@ namespace WinFinder {
                 items.Add(new MyStruct() { X0 = ro.Name, X1 = ro.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —" });
             }
             Target.ItemsSource = items;
+        }
+
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {
+            if (!(sender is ListView view)) {
+                return;
+            }
+            if (e.OriginalSource is GridViewColumnHeader header) {
+                GridViewColumn clickedColumn = header.Column;
+
+                if (clickedColumn != null) {
+                    //string bindingProperty = (clickedColumn.DisplayMemberBinding as Binding)?.Path.Path;
+                    TextBlock dt;
+                    if (clickedColumn.CellTemplate.LoadContent().ToString() == "System.Windows.Controls.StackPanel") {
+                        StackPanel sk = clickedColumn.CellTemplate.LoadContent() as StackPanel;
+                        dt = sk.Children[1] as TextBlock;
+                    } else {
+                        dt = clickedColumn.CellTemplate.LoadContent() as TextBlock;
+                    }
+                    Binding myBinding = BindingOperations.GetBinding(dt, TextBlock.TextProperty);
+                    string bindingProperty = myBinding?.Path.Path;
+                    if (bindingProperty == null) {
+                        bindingProperty = header.Tag.ToString();
+                        if (string.IsNullOrEmpty(bindingProperty)) {
+                            return;
+                        }
+                    }
+
+
+                    SortDescriptionCollection sdc = view.Items.SortDescriptions;
+                    ListSortDirection sortDirection = ListSortDirection.Ascending;
+                    foreach (var sd in sdc) {
+                        if (sd.PropertyName.Equals(bindingProperty)) {
+                            sortDirection = (ListSortDirection)(((int)sd.Direction) ^ 1);
+                            sdc.Remove(sd);
+                            break;
+                        }
+                    }
+                    sdc.Insert(0, new SortDescription(bindingProperty, sortDirection));
+                }
+            }
         }
     }
 }
