@@ -103,7 +103,7 @@
                 <Button x:Name="PathBack" Click="Window_Back" Margin="205,0,0,0" BorderThickness="0">
                     <svgc:SvgViewbox Height="20" Width="20" Source="/icon/left.svg"/>
                 </Button>
-                <Button x:Name="PathMove" Margin="245,0,0,0" BorderThickness="0">
+                <Button x:Name="PathMove" Click="Window_Retu" Margin="245,0,0,0" BorderThickness="0">
                     <svgc:SvgViewbox Height="20" Width="20" Source="/icon/right.svg"/>
                 </Button>
             </Grid>
@@ -116,17 +116,96 @@
                 <Grid Grid.Column="0" Background="#DEDEDE">
                     <Path x:Name="SideClip" Data="{Binding ElementName=Root, Path=SideClipInfo}"/>
                     <StackPanel x:Name="SideBar" Margin="10,0,10,0" Orientation="Vertical"/>
+
+                    <StackPanel x:Name="FileList" Orientation="Vertical"/>
+
                 </Grid>
                 <Grid Grid.Column="1" Background="#FFFFFF">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Rectangle Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="1" Fill="#C9C9C8"/>
                     <Path x:Name="FileClip" Data="{Binding ElementName=Root, Path=ClipInfo}"/>
-                    <ScrollViewer Grid.Column="1" Margin="0,0,0,5">
-                        <StackPanel x:Name="FileList" Grid.Column="0" Orientation="Vertical"/>
-                    </ScrollViewer>
+
+                    <Grid x:Name="RefGrid" Margin="0,0,24,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" x:Name="late0"/>
+                        <Grid Grid.Column="1" x:Name="late1"/>
+                        <Grid Grid.Column="2" x:Name="late2"/>
+                        <Grid Grid.Column="3" x:Name="late3"/>
+                    </Grid>
+ 
+                    <ListView Name="FILEINFOMATION" BorderThickness="0" FontSize="16" AlternationCount="2" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="2" VirtualizingPanel.CacheLengthUnit="Page">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <!--<Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>-->
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Height" Value="45"/>
+                                <Setter Property="Foreground" Value="#000000"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Clip" Value="{Binding Data, ElementName=FileClip}"/>
+                                <Setter Property="Margin" Value="5,0,0,0"/>
+                                <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                                <Style.Triggers>
+                                    <Trigger Property="ListView.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="#F4F6F5"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#9ABAE8"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#9ABAE8"/>
+                                    </Trigger>
+                                   
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="名称" Width="{Binding ActualWidth, ElementName=late0}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <svgc:SvgViewbox Height="30" Margin="10,0,10,0" Source="/icon/file.svg"/>
+                                                <TextBlock Text="{Binding X0}" TextAlignment="Left" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="日期" Width="{Binding ActualWidth, ElementName=late1}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding X1}" TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="类型" Width="{Binding ActualWidth, ElementName=late2}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding X2}" TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="大小" Width="{Binding ActualWidth, ElementName=late3}">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding X3}" TextAlignment="Right"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
                 </Grid>
             </Grid>
         </Grid>
