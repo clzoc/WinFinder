@@ -1,11 +1,14 @@
 Windows File Manager with MacOS Style Design, include continuous curvature corner, high saturation color, exquisite icons and similar animation.
 
 It looks like the following picture:
-![屏幕截图 2024-05-12 165032](https://github.com/clzoc/WinFinder/assets/62627722/0faee531-da10-4a10-a808-6ffdf56ae1a1)
+![1](https://github.com/clzoc/WinFinder/assets/62627722/d5555e8c-093c-4362-9257-bc20b767abf0)
 
 
+1. Sort according to GridViewColumnHeader (click) ✔
+2. Access any folder or file ✔
+3. Dedicated style management ✔
+4. Virtual Panel ✔
 
 TODO List:
-  1. Virtual Scroll. ✔
-  2. UserControl Memory Reuse.
-  3. Multi View like List, Grid ......
+  1. UserControl Memory Reuse.
+  2. Multi View like List, Grid ......
