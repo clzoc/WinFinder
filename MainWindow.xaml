@@ -171,7 +171,7 @@
                         <Grid Grid.Column="3" x:Name="late3"/>
                     </Grid>
 
-                    <ListView Name="FILEINFOMATION" Padding="5,0,0,0" GridViewColumnHeader.Click="GridViewColumnHeader_Click"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" FontSize="14" AlternationCount="2" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="2" VirtualizingPanel.CacheLengthUnit="Page">
+                    <ListView Name="FILEINFOMATION" ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}" Padding="5,0,0,0" GridViewColumnHeader.Click="GridViewColumnHeader_Click"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" FontSize="14" AlternationCount="2" ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="10,10" VirtualizingPanel.CacheLengthUnit="Item">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Template">
@@ -220,13 +220,12 @@
                                                 </Setter>
                                             </Style>
                                         </GridViewColumnHeader.Style>
-                                        <TextBlock Text="名称" Margin="18,0,0,0" FontWeight="Bold"/>
+                                        <TextBlock Text="名称" Margin="10,0,0,0" FontWeight="Bold"/>
                                     </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <Image Source="{Binding S0}" Margin="0,0,10,0"/>
-                                                <!--<svgc:SvgViewbox Height="15" Margin="10,0,10,0" Source="/icon/file.svg"/>-->
+                                                <Image Source="{Binding S0}" Width="20" Margin="0,0,10,0"/>
                                                 <TextBlock Text="{Binding X0}" TextAlignment="Left" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </DataTemplate>
@@ -297,7 +296,7 @@
                                     </GridViewColumnHeader>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding X3}" Margin="0,0,10,0" TextAlignment="Right" Opacity="0.6"/>
+                                            <TextBlock Text="{Binding X3}" Tag="{Binding X4}" Margin="0,0,10,0" TextAlignment="Right" Opacity="0.6"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

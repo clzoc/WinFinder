@@ -28,34 +28,21 @@ using System.Drawing.Configuration;
 using System.Windows.Interop;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace WinFinder {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    /// 
-
-    public class User {
-        public string X0 { get; set; }
-
-        public int X1 { get; set; }
-
-        public string X2 { get; set; }
-    }
-
-    struct MyStruct {
-        public string X0 { get; set; }
-        public string X1 { get; set; }
-        public string X2 { get; set; }
-        public string X3 { get; set; }
-        public ImageSource S0 { get; set; }
-    }
-
+    ///     
     public partial class MainWindow : Window, INotifyPropertyChanged {
         public MainWindow() {
             InitializeComponent();
+            FILEINFOMATION.ItemsSource = ListInfo;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         private readonly string[] icon = { "/icon/Maximize_Button_Hover.svg", "/icon/Maximize_Button_Hover_Zoom.svg" };
 
         private static readonly double squircle_radius = 20;
@@ -104,9 +91,7 @@ namespace WinFinder {
                 zoomButton = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ZoomButton"));
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        }        
 
         public string Window_Corner(double height, double width, double radius, double bias) {
             height -= bias * 2; width -= bias * 2;
@@ -191,6 +176,9 @@ namespace WinFinder {
         }
 
         private static readonly double fileHeight = 25;
+
+        private static ObservableCollection<MyStruct> ListInfo = new ObservableCollection<MyStruct>();
+
         private void ContentView(object sender, RoutedEventArgs e) {
             Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
             ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 10, 0);
@@ -231,7 +219,7 @@ namespace WinFinder {
                     Source = SideClip
                 };
                 t.SetBinding(ClipProperty, m);
-                
+
                 t.Tag = sidePath[i];
                 t.MouseLeftButtonDown += DiskHandler;
 
@@ -266,8 +254,7 @@ namespace WinFinder {
                 _ = SideBar.Children.Add(t);
             }
 
-            Change_ItemSource(FILEINFOMATION, @"C:\Users\tsunami");
-            //LoadFileList(FileList, files, dics, FileClip);
+            Change_ItemSource(@"C:\Users\tsunami");
         }
 
         private static readonly string[] suffixes = new string[] { " B", " KB", " MB", " GB", " TB", " PB" };
@@ -289,7 +276,7 @@ namespace WinFinder {
             if (pwd != @"D:\" && pwd != @"C:\") {
                 string next = di.Parent.FullName;
                 once = pwd;
-                Change_ItemSource(FILEINFOMATION, @next);
+                Change_ItemSource(@next);
             } else {
                 return;
             }
@@ -299,13 +286,13 @@ namespace WinFinder {
             if (once == "") {
                 return;
             }
-            Change_ItemSource(FILEINFOMATION, @once);
+            Change_ItemSource(@once);
         }
 
         private void DiskHandler(object sender, RoutedEventArgs e) {
             Grid g = sender as Grid;
             string s = g.Tag as string;
-            Change_ItemSource(FILEINFOMATION, @s);
+            Change_ItemSource(@s);
         }
 
         private string pwd = @"C:\Users\tsunami";
@@ -316,38 +303,56 @@ namespace WinFinder {
             string str = $@"{pwd}\{myStruct.X0}";
             string strType = myStruct.X2;
             if (strType == "文件夹") {
-                Change_ItemSource(FILEINFOMATION, @str);
+                Change_ItemSource(@str);
             } else {
-                Process.Start(str);
+                Process.Start(@str);
             }
 
             //MessageBox.Show($"Target Route Path is {pwd}");
         }
 
-        private void Change_ItemSource(ListView Target, string str) {            
+        private void Change_ItemSource(string str) {
             pwd = str;
             DirectoryInfo di = new DirectoryInfo(@str);
-            FileInfo[] files = di.GetFiles();
+            FileInfo[] fics = di.GetFiles();
             DirectoryInfo[] dics = di.GetDirectories();
-            List<MyStruct> items = new List<MyStruct>();
-            foreach (FileInfo fo in files) {
-                Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fo.FullName);
-                Bitmap bmp = icon.ToBitmap();
-                ImageSource smp = ToBitmapSourceA(bmp);
-                items.Add(new MyStruct() { X0 = fo.Name, X1 = fo.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fo.Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fo.Length), S0 = smp });                         
+            int nF = fics.Length; int nD = dics.Length;            
+
+            ListInfo.Clear();
+            for (int i = 0; i < nF; i++) {
+                ListInfo.Add(new MyStruct() { X0 = fics[i].Name, X1 = fics[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fics[i].Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fics[i].Length), X4 = fics[i].Length });
             }
-            foreach (DirectoryInfo ro in dics) {
-                SHFILEINFO shinfo = new SHFILEINFO();
-                SHGetFileInfo(ro.FullName, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_LARGEICON);
-                Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
-                Bitmap bmp = icon.ToBitmap();
-                ImageSource smp = ToBitmapSourceA(bmp);
-                items.Add(new MyStruct() { X0 = ro.Name, X1 = ro.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", S0 = smp });
-            }
-            Target.ItemsSource = items;
+            for (int i = 0; i < nD; i++) {
+                ListInfo.Add(new MyStruct() { X0 = dics[i].Name, X1 = dics[i].LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", X4 = 0 });
+            }            
+
+            Task.Run(() => {
+                for (int i = 0; i < nF; i++) {
+                    Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fics[i].FullName);
+                    Bitmap bmp = icon.ToBitmap();
+                    BitmapSource smp = ToBitmapSource(bmp);
+                    Dispatcher.Invoke(new Action(() => {
+                        BitmapFrame frame = BitmapFrame.Create(smp);
+                        ListInfo[i].S0 = frame;
+                    }));
+                }
+                for (int i = 0; i < nD; i++) {
+                    SHFILEINFO shinfo = new SHFILEINFO();
+                    SHGetFileInfo(dics[i].FullName, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_LARGEICON);
+                    Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
+                    Bitmap bmp = icon.ToBitmap();
+                    BitmapSource smp = ToBitmapSource(bmp);
+                    Dispatcher.Invoke(new Action(delegate {
+                        BitmapFrame frame = BitmapFrame.Create(smp);
+                        ListInfo[i + nF].S0 = frame;
+                    }));
+                }
+                //Thread.Sleep(4000);
+                //MessageBox.Show($"Target Route Path is {pwd}");
+            } );
         }
 
-        private ImageSource ToBitmapSourceA(Bitmap bitmap) {
+        private BitmapSource ToBitmapSource(Bitmap bitmap) {
             MemoryStream stream = new MemoryStream();
             bitmap.Save(stream, ImageFormat.Png);
             stream.Position = 0;
@@ -375,15 +380,15 @@ namespace WinFinder {
 
         private const uint SHGFI_ICON = 0x100;
         private const uint SHGFI_LARGEICON = 0x0;
-        private const uint SHGFI_SMALLICON = 0x000000001;
+        //private const uint SHGFI_SMALLICON = 0x000000001;
 
-        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {            
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {
             if (!(sender is ListView view)) {
                 return;
             }
             if (e.OriginalSource is GridViewColumnHeader header) {
                 GridViewColumn clickedColumn = header.Column;
-
+                TextBlock bt = header.Content as TextBlock;
                 if (clickedColumn != null) {
                     //string bindingProperty = (clickedColumn.DisplayMemberBinding as Binding)?.Path.Path;
                     TextBlock dt;
@@ -393,7 +398,12 @@ namespace WinFinder {
                     } else {
                         dt = clickedColumn.CellTemplate.LoadContent() as TextBlock;
                     }
-                    Binding myBinding = BindingOperations.GetBinding(dt, TextBlock.TextProperty);
+                    Binding myBinding;
+                    if (bt.Text == "大小") {
+                        myBinding = BindingOperations.GetBinding(dt, TagProperty);
+                    } else {
+                        myBinding = BindingOperations.GetBinding(dt, TextBlock.TextProperty);
+                    }                    
                     string bindingProperty = myBinding?.Path.Path;
                     if (bindingProperty == null) {
                         bindingProperty = header.Tag.ToString();
@@ -401,7 +411,6 @@ namespace WinFinder {
                             return;
                         }
                     }
-
 
                     SortDescriptionCollection sdc = view.Items.SortDescriptions;
                     ListSortDirection sortDirection = ListSortDirection.Ascending;
@@ -416,5 +425,19 @@ namespace WinFinder {
                 }
             }
         }
+    }
+    public class MyStruct:INotifyPropertyChanged {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public string x0; public string x1; public string x2; public string x3; public long x4;
+        public BitmapSource s0;
+        public string X0 { get { return x0; } set { x0 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("X0")); } }
+        public string X1 { get { return x1; } set { x1 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("X1")); } }
+        public string X2 { get { return x2; } set { x2 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("X2")); } }
+        public string X3 { get { return x3; } set { x3 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("X3")); } }
+        public long X4 { get { return x4; } set { x4 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("X4")); } }
+        public BitmapSource S0 {
+            get { return s0; }
+            set { s0 = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("S0")); }
+        }       
     }
 }
