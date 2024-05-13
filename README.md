@@ -1,7 +1,8 @@
 Windows File Manager with MacOS Style Design, include continuous curvature corner, high saturation color, exquisite icons and similar animation.
 
 It looks like the following picture:
-![1](https://github.com/clzoc/WinFinder/assets/62627722/f0ef041c-4ece-43ae-b3e8-d241c736636e)
+![1](https://github.com/clzoc/WinFinder/assets/62627722/3cb2b3cc-aa60-4723-9a3a-462ea6d101b7)
+
 
 
 
