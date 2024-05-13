@@ -23,6 +23,11 @@ using static System.Net.WebRequestMethods;
 using SharpVectors.Dom;
 using System.Windows.Shell;
 using static System.Net.Mime.MediaTypeNames;
+using System.Drawing;
+using System.Drawing.Configuration;
+using System.Windows.Interop;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace WinFinder {
     /// <summary>
@@ -43,6 +48,7 @@ namespace WinFinder {
         public string X1 { get; set; }
         public string X2 { get; set; }
         public string X3 { get; set; }
+        public ImageSource S0 { get; set; }
     }
 
     public partial class MainWindow : Window, INotifyPropertyChanged {
@@ -203,7 +209,8 @@ namespace WinFinder {
 
             SideClipInfo = Window_Corner(50, SideBar.ActualWidth, 15, 5);
 
-            string[] side = { "tsunami", "桌面", "下载", "图片", "影片", "音乐", "本地磁盘(C:)", "本地磁盘(D:)", };
+            string[] side = { "tsunami", "桌面", "下载", "图片", "视频", "文稿", "本地磁盘(C:)", "本地磁盘(D:)", };
+            string[] sidePath = { @"C:\Users\tsunami", @"C:\Users\tsunami\Desktop", @"C:\Users\tsunami\Downloads", @"C:\Users\tsunami\Pictures", @"C:\Users\tsunami\Videos", @"C:\Users\tsunami\Documents", @"C:\", @"D:\" };
             string[] icon = {
                 "/icon/folder.badge.person.crop.svg",
                 "/icon/house.fill.svg",
@@ -224,15 +231,15 @@ namespace WinFinder {
                     Source = SideClip
                 };
                 t.SetBinding(ClipProperty, m);
-
-                if (i == 6) { t.MouseLeftButtonDown += DiskHandler; };
-                if (i == 7) { t.MouseLeftButtonDown += DiskHandler; };
+                
+                t.Tag = sidePath[i];
+                t.MouseLeftButtonDown += DiskHandler;
 
                 DataTrigger d = new DataTrigger {
                     Binding = new Binding("IsMouseOver") { Source = t },
                     Value = true,
                 };
-                d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9ABAE8")) });
+                d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
                 Style st = new Style();
                 st.Triggers.Add(d);
                 t.Style = st;
@@ -248,7 +255,7 @@ namespace WinFinder {
 
                 TextBlock textBlock = new TextBlock {
                     Text = side[i],
-                    FontSize = 18,
+                    FontSize = 16,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(60, 0, 0, 0),
                 };
@@ -297,8 +304,7 @@ namespace WinFinder {
 
         private void DiskHandler(object sender, RoutedEventArgs e) {
             Grid g = sender as Grid;
-            TextBlock textBlock = g.Children[1] as TextBlock;
-            string s = textBlock.Text.Substring(5, 2) + @"\";
+            string s = g.Tag as string;
             Change_ItemSource(FILEINFOMATION, @s);
         }
 
@@ -318,22 +324,60 @@ namespace WinFinder {
             //MessageBox.Show($"Target Route Path is {pwd}");
         }
 
-        private void Change_ItemSource(ListView Target, string str) {
+        private void Change_ItemSource(ListView Target, string str) {            
             pwd = str;
             DirectoryInfo di = new DirectoryInfo(@str);
             FileInfo[] files = di.GetFiles();
             DirectoryInfo[] dics = di.GetDirectories();
             List<MyStruct> items = new List<MyStruct>();
             foreach (FileInfo fo in files) {
-                items.Add(new MyStruct() { X0 = fo.Name, X1 = fo.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fo.Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fo.Length) });
+                Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fo.FullName);
+                Bitmap bmp = icon.ToBitmap();
+                ImageSource smp = ToBitmapSourceA(bmp);
+                items.Add(new MyStruct() { X0 = fo.Name, X1 = fo.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fo.Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fo.Length), S0 = smp });                         
             }
             foreach (DirectoryInfo ro in dics) {
-                items.Add(new MyStruct() { X0 = ro.Name, X1 = ro.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —" });
+                SHFILEINFO shinfo = new SHFILEINFO();
+                SHGetFileInfo(ro.FullName, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_LARGEICON);
+                Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
+                Bitmap bmp = icon.ToBitmap();
+                ImageSource smp = ToBitmapSourceA(bmp);
+                items.Add(new MyStruct() { X0 = ro.Name, X1 = ro.LastAccessTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", S0 = smp });
             }
             Target.ItemsSource = items;
         }
 
-        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {
+        private ImageSource ToBitmapSourceA(Bitmap bitmap) {
+            MemoryStream stream = new MemoryStream();
+            bitmap.Save(stream, ImageFormat.Png);
+            stream.Position = 0;
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = stream;
+            bitmapImage.EndInit();
+            return bitmapImage;
+        }
+
+        //Struct used by SHGetFileInfo function
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SHFILEINFO {
+            public IntPtr hIcon;
+            public int iIcon;
+            public uint dwAttributes;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szDisplayName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+            public string szTypeName;
+        };
+
+        [DllImport("shell32.dll")]
+        private static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
+
+        private const uint SHGFI_ICON = 0x100;
+        private const uint SHGFI_LARGEICON = 0x0;
+        private const uint SHGFI_SMALLICON = 0x000000001;
+
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {            
             if (!(sender is ListView view)) {
                 return;
             }
