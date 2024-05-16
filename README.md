@@ -1,4 +1,4 @@
-##Windows File Manager with MacOS Style Design, include continuous curvature corner, high saturation color, exquisite icons and similar animation.
+## Windows File Manager with MacOS Style Design, include continuous curvature corner, high saturation color, exquisite icons and similar animation.
 
 It looks like the following picture:
 #### ListView
