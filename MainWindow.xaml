@@ -9,8 +9,8 @@
         mc:Ignorable="d"
         Name="Root"              
         Title="MainWindow" 
-        Height="802" 
-        Width="1202" 
+        Height="902" 
+        Width="1202"         
         WindowStyle="None"  
         AllowsTransparency="True"
         Background="Transparent">
@@ -142,6 +142,49 @@
                     </Button.Style>
                     <svgc:SvgViewbox Height="20" Width="20" Source="/icon/right.svg"/>
                 </Button>
+
+                <Button x:Name="ViewListView" Click="ViewListView_Click" Margin="345,0,0,0" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#9ABAE8"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <svgc:SvgViewbox Height="20" Width="20" Source="/icon/list.bullet.svg"/>
+                </Button>
+                <Button x:Name="ViewGridView" Click="ViewGridView_Click" Margin="385,0,0,0" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#9ABAE8"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <svgc:SvgViewbox Height="20" Width="20" Source="/icon/fanblades.fill.svg"/>
+                </Button>
             </Grid>
 
             <Grid Grid.Row="1">
@@ -151,13 +194,11 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Background="#DEDEDE">
                     <Path x:Name="SideClip" Data="{Binding ElementName=Root, Path=SideClipInfo}"/>
-                    <StackPanel x:Name="SideBar" Margin="10,0,10,0" Orientation="Vertical"/>
-
-                    <StackPanel x:Name="FileList" Orientation="Vertical"/>
-
+                    <StackPanel x:Name="SideBar" Margin="0,5,0,0" Orientation="Vertical"/>
                 </Grid>
                 <Grid Grid.Column="1" Background="#FFFFFF">
                     <Path x:Name="FileClip" Data="{Binding ElementName=Root, Path=ClipInfo}"/>
+                    <Path x:Name="GridViewClip" Data="{Binding ElementName=Root, Path=GridClipInfo}"/>
                     <Grid x:Name="RefGrid" Margin="0,0,20,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*"/>
@@ -170,8 +211,9 @@
                         <Grid Grid.Column="2" x:Name="late2"/>
                         <Grid Grid.Column="3" x:Name="late3"/>
                     </Grid>
-
-                    <ListView Name="FILEINFOMATION" ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}" Padding="5,0,0,0" GridViewColumnHeader.Click="GridViewColumnHeader_Click"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" FontSize="14" AlternationCount="2" ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="10,10" VirtualizingPanel.CacheLengthUnit="Item">
+                    <!--ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="10,10" VirtualizingPanel.CacheLengthUnit="Item"-->
+                    <!--ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}"-->
+                    <ListView Name="FILEINFOMATION" Padding="2,0,0,2" GridViewColumnHeader.Click="GridViewColumnHeader_Click" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" FontSize="14" AlternationCount="2" >
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Template">
@@ -185,7 +227,7 @@
                                 </Setter>
                                 <Setter Property="Margin" Value="0,0,0,0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Height" Value="25"/>
+                                <Setter Property="Height" Value="30"/>
                                 <Setter Property="Foreground" Value="#000000"/>
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="Clip" Value="{Binding Data, ElementName=FileClip}"/>
@@ -225,8 +267,8 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <Image Source="{Binding S0}" Width="20" Margin="0,0,10,0"/>
-                                                <TextBlock Text="{Binding X0}" TextAlignment="Left" VerticalAlignment="Center"/>
+                                                <Image Source="{Binding S0}" Width="20" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding X0}" FontSize="16" TextAlignment="Left" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -303,6 +345,46 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <ItemsControl x:Name="GridViewContainer" Visibility="Collapsed" Margin="30,0,0,0">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="ItemsControl">
+                                <ScrollViewer>
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="110"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Width" Value="110"/>
+                                            <Setter Property="Height" Value="150"/>
+                                            <Setter Property="Margin" Value="0,5,5,0"/>
+                                            <Setter Property="Clip" Value="{Binding Data, ElementName=GridViewClip}"/>
+                                            <EventSetter Event="MouseLeftButtonDown" Handler="ListViewItem_MouseDoubleClick"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#9ABAE8"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Image Source="{Binding S0}" Grid.Row="0" Width="96" Height="96" VerticalAlignment="Bottom"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding X0}" Tag="{Binding X2}" Height="25" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
             </Grid>
         </Grid>

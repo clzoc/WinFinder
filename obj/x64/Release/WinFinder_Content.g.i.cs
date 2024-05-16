@@ -8,7 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("packages/microsoft.web.webview2.1.0.2420.47/runtimes/win-x64/native/webview2loade" +
-    "r.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icon/doc.fill.svg")]
 
 
