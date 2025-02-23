@@ -37,3 +37,4 @@ C:\Action\wpf\WpfApp2\bin\x64\Release\Microsoft.WindowsAPICodePack.dll
 C:\Action\wpf\WpfApp2\bin\x64\Release\Microsoft.WindowsAPICodePack.Shell.dll
 C:\Action\wpf\WpfApp2\bin\x64\Release\Microsoft.WindowsAPICodePack.xml
 C:\Action\wpf\WpfApp2\bin\x64\Release\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Action\wpf\WpfApp2\bin\x64\Release\VirtualizingWrapPanel.dll

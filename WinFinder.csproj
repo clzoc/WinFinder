@@ -82,29 +82,29 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.5.0, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft-WindowsAPICodePack-Shell.1.1.5\lib\net472\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Converters.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=b532964b8548be77, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Converters.Wpf.dll</HintPath>
+    <Reference Include="SharpVectors.Converters.Wpf, Version=1.8.4.2, Culture=neutral, PublicKeyToken=b532964b8548be77, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Converters.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Core, Version=1.8.4.0, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Core.dll</HintPath>
+    <Reference Include="SharpVectors.Core, Version=1.8.4.2, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Css, Version=1.8.4.0, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Css.dll</HintPath>
+    <Reference Include="SharpVectors.Css, Version=1.8.4.2, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Css.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Dom, Version=1.8.4.0, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Dom.dll</HintPath>
+    <Reference Include="SharpVectors.Dom, Version=1.8.4.2, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Dom.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Model, Version=1.8.4.0, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Model.dll</HintPath>
+    <Reference Include="SharpVectors.Model, Version=1.8.4.2, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Model.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Rendering.Gdi, Version=1.8.4.0, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Rendering.Gdi.dll</HintPath>
+    <Reference Include="SharpVectors.Rendering.Gdi, Version=1.8.4.2, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Rendering.Gdi.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Rendering.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=d0902381100df30e, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Rendering.Wpf.dll</HintPath>
+    <Reference Include="SharpVectors.Rendering.Wpf, Version=1.8.4.2, Culture=neutral, PublicKeyToken=d0902381100df30e, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Rendering.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectors.Runtime.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=d16e717f0a981fb9, processorArchitecture=MSIL">
-      <HintPath>packages\SharpVectors.1.8.4\lib\net47\SharpVectors.Runtime.Wpf.dll</HintPath>
+    <Reference Include="SharpVectors.Runtime.Wpf, Version=1.8.4.2, Culture=neutral, PublicKeyToken=d16e717f0a981fb9, processorArchitecture=MSIL">
+      <HintPath>packages\SharpVectors.1.8.4.2\lib\net47\SharpVectors.Runtime.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -118,6 +118,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="VirtualizingWrapPanel, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\VirtualizingWrapPanel.2.1.1\lib\net462\VirtualizingWrapPanel.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -241,6 +244,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon\doc.fill.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\Close_Button_Hover_M.svg" />
+    <Resource Include="icon\Maximize_Button_Hover_M.svg" />
+    <Resource Include="icon\Maximize_Button_Hover_Zoom_M.svg" />
+    <Resource Include="icon\Minimize_Button_Hover_M.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\Close_Button_Hover_M2.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
