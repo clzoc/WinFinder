@@ -45,7 +45,7 @@ namespace WinFinder {
     ///     
     public partial class MainWindow : Window, INotifyPropertyChanged {
         public MainWindow() {
-            InitializeComponent();            
+            InitializeComponent();
             timer.Tick += Timer_Tick;
             SizeChanged += new SizeChangedEventHandler(MainWindow_Resize);
             FILEINFOMATION.ItemsSource = ListInfo;
@@ -226,12 +226,12 @@ namespace WinFinder {
 
         public static readonly double fileHeight = 30;
 
-        public ObservableCollection<MyStruct> ListInfo = new ObservableCollection<MyStruct>();
+        public ObservableCollection<MyStruct> ListInfo = new ObservableCollection<MyStruct>();        
 
         private List<string> sidePath = new List<string> { @"C:\Users\tsunami", @"C:\Users\tsunami\Desktop", @"C:\Users\tsunami\Downloads", @"C:\Users\tsunami\Pictures", @"C:\Users\tsunami\Videos", @"C:\Users\tsunami\Documents", };
 
         private void ContentView(object sender, RoutedEventArgs e) {
-            GridClipInfo = Window_Corner(175, 115, 20, 0.5);
+            GridClipInfo = Window_Corner(175, 115, squircle_radius, 0.5);
 
             List<string> side = new List<string> { "tsunami", "桌面", "下载", "图片", "视频", "文稿", };
             List<string> icon = new List<string> {
@@ -491,11 +491,11 @@ namespace WinFinder {
                 // recordGrid.Background = System.Windows.Media.Brushes.Transparent;                    
                 // recordGrid.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
                 //}
-                recordGrid?.ClearValue(BackgroundProperty);
                 // temp.SetCurrentValue(BackgroundProperty, new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")));
+
+                recordGrid?.ClearValue(BackgroundProperty);
                 temp.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
                 recordGrid = temp;
-                return;
             }
 
             if (e.ClickCount != 2) {
@@ -537,6 +537,7 @@ namespace WinFinder {
                 Process.Start(@str);
             }
         }
+        
 
         private void Change_ItemSource(string str) {
             pwd = str;
@@ -548,53 +549,57 @@ namespace WinFinder {
             
             int nF = fic.Count; int nD = dic.Count;
 
+            loadOrNot.Clear();   
             ListInfo.Clear();
             // MessageBox.Show($"{DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             // Trace.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             for (int i = 0; i < nF; i++) {
                 ListInfo.Add(new MyStruct() { X0 = fic[i].Name, X1 = fic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fic[i].Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fic[i].Length), X4 = fic[i].Length });
+                loadOrNot.Add(false);
             }
             for (int i = 0; i < nD; i++) {
                 ListInfo.Add(new MyStruct() { X0 = dic[i].Name, X1 = dic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", X4 = -1 });
+                loadOrNot.Add(false);
             }
 
             string preStr = @pwd;
             if (@pwd == @"C:\" || @pwd == @"D:\") {
                 preStr = pwd.Replace(@"\", @"");
-            }
-
-            if (GridViewContainer.IsVisible == false) {
-                FILEINFOMATION.ScrollIntoView(FILEINFOMATION.Items[0]);
-            } else {
-                ScrollViewer scrollViewer = VisualTreeHelper.GetChild(GridViewContainer, 0) as ScrollViewer;
-                scrollViewer.ScrollToTop();
-            }
+            }            
 
             if (nF + nD > 0) {
-                Task.Run(() => {
-                    Parallel.For(0, 3, i => {
-                        for (int j = 0 + i; j < Math.Min(nF + nD, 139); j += 3) {
-                            string file = @preStr + @"\" + ListInfo[j].X0;
-                            var shellUnit = ShellObject.FromParsingName(file);
-                            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                            imp.Freeze();
-                            Dispatcher.Invoke(new Action(delegate {
-                                ListInfo[j].S0 = imp;
-                            }));
-                        }
-                    });
-                    //for (int i = 0; i < nF + nD; i++) {
+                if (GridViewContainer.IsVisible == false) {
+                    FILEINFOMATION.ScrollIntoView(FILEINFOMATION.Items[0]);
+                } else {
+                    ScrollViewer scrollViewer = VisualTreeHelper.GetChild(GridViewContainer, 0) as ScrollViewer;
+                    scrollViewer.ScrollToTop();
+                }
+                //Task.Run(() => {
+                //    Parallel.For(0, 3, i => {
+                //        for (int j = 0 + i; j < Math.Min(nF + nD, 139); j += 3) {
+                //            string file = @preStr + @"\" + ListInfo[j].X0;
+                //            var shellUnit = ShellObject.FromParsingName(file);
+                //            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                //            imp.Freeze();
+                //            int localIndex = j;
+                //            Dispatcher.InvokeAsync(new Action(delegate {
+                //                ListInfo[localIndex].S0 = imp;
+                //                loadOrNot[localIndex] = true;
+                                
+                //            }));
+                //        }
+                //    });
+                    //for (int i = 0; i < Math.Min(nF + nD, 139); i++) {
                     //    string filepath = @preStr + @"\" + ListInfo[i].X0;
                     //    var shellobject = ShellObject.FromParsingName(filepath);
-                    //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-                    //    //Trace.WriteLine($"{bmp.PixelHeight}");
-                    //    //Trace.WriteLine($"{bmp.PixelWidth}");                    
-                    //    bmp.Freeze();
+                    //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;                  
+                    //    bmp.Freeze();                        
                     //    Dispatcher.Invoke(new Action(delegate {
                     //        ListInfo[i].S0 = bmp;
+                    //        loadOrNot[i] = true;
                     //    }));
                     //}
-                });
+                //});
             }
 
             // Task.Run(() => {
@@ -684,6 +689,7 @@ namespace WinFinder {
         //private const uint SHGFI_LARGEICON = 0x0;
         //private const uint SHGFI_SMALLICON = 0x000000001;
 
+        public ObservableCollection<bool> loadOrNot = new ObservableCollection<bool>();
         private void Timer_Tick(object sender, EventArgs e) {
             //Prevent timer from looping
             (sender as DispatcherTimer).Stop();
@@ -710,30 +716,47 @@ namespace WinFinder {
             if (@pwd == @"C:\" || @pwd == @"D:\") {
                 preStr = pwd.Replace(@"\", @"");
             }
+            //for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 129); i++) {
+            //    string filepath = @preStr + @"\" + ListInfo[i].X0;
+              
+            //    int localIndex = i;
+            //    if (loadOrNot[localIndex] == false) {
+            //        var shellobject = ShellObject.FromParsingName(filepath);
+            //        BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
+            //        ListInfo[localIndex].S0 = bmp;
+            //        loadOrNot[localIndex] = true;
+            //    }
+            //}
             Task.Run(() => {
-                //Parallel.For(Math.Max(0, rowIndex - 10), Math.Min(nF + nD, rowIndex + 50), i => {
-                Parallel.For(0, 3, i => {
-                    for (int j = Math.Max(0, rowIndex - 10) + i; j < Math.Min(nF + nD, rowIndex + 129); j += 3) {
-                        string file = @preStr + @"\" + ListInfo[j].X0;
-                        var shellUnit = ShellObject.FromParsingName(file);
-                        BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                        imp.Freeze();
-                        Dispatcher.Invoke(new Action(delegate {
-                            ListInfo[j].S0 = imp;
-                        }));
-                    }
-                });
-                //for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 50); i++) {
-                //    string filepath = @preStr + @"\" + ListInfo[i].X0;
-                //    var shellobject = ShellObject.FromParsingName(filepath);
-                //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-                //    //Trace.WriteLine($"{bmp.PixelHeight}");
-                //    //Trace.WriteLine($"{bmp.PixelWidth}");                    
-                //    bmp.Freeze();
-                //    Dispatcher.Invoke(new Action(delegate {
-                //        ListInfo[i].S0 = bmp;
-                //    }));
-                //}
+
+                //Parallel.For(0, 3, i => {
+                //    for (int j = Math.Max(0, rowIndex - 10) + i; j < Math.Min(nF + nD, rowIndex + 129); j += 3) {
+                //        string file = @preStr + @"\" + ListInfo[j].X0;
+                //        var shellUnit = ShellObject.FromParsingName(file);
+                //        BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                //        imp.Freeze();
+                //        int localIndex = j;
+                //        Dispatcher.InvokeAsync(new Action(delegate {
+                //            if (loadOrNot[localIndex] == false) {
+                //                ListInfo[localIndex].S0 = imp;
+                //                loadOrNot[localIndex] = true;
+                //            }
+                //        }));
+                //    }
+                //});
+
+                for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 129); i++) {
+                    string filepath = @preStr + @"\" + ListInfo[i].X0;
+                    var shellobject = ShellObject.FromParsingName(filepath);
+                    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
+                    bmp.Freeze();
+                    Dispatcher.Invoke(new Action(delegate {
+                        if (loadOrNot[i] == false) {
+                            ListInfo[i].S0 = bmp;
+                            loadOrNot[i] = true;
+                        }
+                    }));
+                }
             });
         }
 

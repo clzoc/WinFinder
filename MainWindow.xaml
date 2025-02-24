@@ -206,7 +206,7 @@
                                 <ColumnDefinition Width="5*"/>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="120"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Column="0" x:Name="late0"/>
@@ -291,7 +291,7 @@
                                                     </Setter>
                                                 </Style>
                                             </GridViewColumnHeader.Style>
-                                            <TextBlock Text="日期" Margin="15,0,0,0" FontWeight="Bold"/>
+                                            <TextBlock Text="日期" Margin="12,0,0,0" FontWeight="Bold"/>
                                         </GridViewColumnHeader>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -349,18 +349,18 @@
                             </ListView.View>
                         </ListView>
 
-                        <vwp:VirtualizingItemsControl x:Name="GridViewContainer" Visibility="Collapsed"  Margin="0,0,0,0">
+                        <vwp:VirtualizingItemsControl x:Name="GridViewContainer" Visibility="Collapsed">
                             <!--<ItemsControl x:Name="GridViewContainer" Visibility="Collapsed"  Margin="0,0,0,0">-->
                             <ItemsControl.Template>
                                 <ControlTemplate TargetType="ItemsControl">
-                                    <ScrollViewer ScrollChanged="ForScrollChanged" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                    <ScrollViewer FocusVisualStyle="{x:Null}" ScrollChanged="ForScrollChanged" ScrollViewer.VerticalScrollBarVisibility="Hidden">
                                         <ItemsPresenter/>
                                     </ScrollViewer>
                                 </ControlTemplate>
                             </ItemsControl.Template>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <vwp:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.CacheLength="200, 200" VirtualizingPanel.CacheLengthUnit="Pixel" Orientation="Horizontal" Margin="0,6,0,6"/>
+                                    <vwp:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Focusable="False" VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.CacheLength="200, 200" VirtualizingPanel.CacheLengthUnit="Pixel" Orientation="Horizontal" Margin="0,6,0,6"/>
                                     <!--<WrapPanel Orientation="Horizontal" Margin="0,6,0,6"/>-->
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
@@ -386,7 +386,7 @@
                                             </Style>
                                         </Grid.Style>
                                         <Image Source="{Binding S0, IsAsync=True}" Grid.Row="0" MaxWidth="105" MaxHeight="105" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-                                        <TextBlock Grid.Row="1" Margin="10,0,10,0"  Height="58" Text="{Binding X0}" Tag="{Binding X2}" TextAlignment="Justify" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                                        <TextBlock Grid.Row="1" Margin="5,0,5,0"  Height="58" Text="{Binding X0}" Tag="{Binding X2}" TextAlignment="Justify" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
