@@ -574,32 +574,32 @@ namespace WinFinder {
                     ScrollViewer scrollViewer = VisualTreeHelper.GetChild(GridViewContainer, 0) as ScrollViewer;
                     scrollViewer.ScrollToTop();
                 }
-                //Task.Run(() => {
-                //    Parallel.For(0, 3, i => {
-                //        for (int j = 0 + i; j < Math.Min(nF + nD, 139); j += 3) {
-                //            string file = @preStr + @"\" + ListInfo[j].X0;
-                //            var shellUnit = ShellObject.FromParsingName(file);
-                //            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                //            imp.Freeze();
-                //            int localIndex = j;
-                //            Dispatcher.InvokeAsync(new Action(delegate {
-                //                ListInfo[localIndex].S0 = imp;
-                //                loadOrNot[localIndex] = true;
-                                
-                //            }));
-                //        }
-                //    });
-                    //for (int i = 0; i < Math.Min(nF + nD, 139); i++) {
-                    //    string filepath = @preStr + @"\" + ListInfo[i].X0;
-                    //    var shellobject = ShellObject.FromParsingName(filepath);
-                    //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;                  
-                    //    bmp.Freeze();                        
-                    //    Dispatcher.Invoke(new Action(delegate {
-                    //        ListInfo[i].S0 = bmp;
-                    //        loadOrNot[i] = true;
-                    //    }));
-                    //}
-                //});
+                Task.Run(() => {
+                    //    Parallel.For(0, 3, i => {
+                    //        for (int j = 0 + i; j < Math.Min(nF + nD, 139); j += 3) {
+                    //            string file = @preStr + @"\" + ListInfo[j].X0;
+                    //            var shellUnit = ShellObject.FromParsingName(file);
+                    //            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                    //            imp.Freeze();
+                    //            int localIndex = j;
+                    //            Dispatcher.InvokeAsync(new Action(delegate {
+                    //                ListInfo[localIndex].S0 = imp;
+                    //                loadOrNot[localIndex] = true;
+
+                    //            }));
+                    //        }
+                    //    });
+                    for (int i = 0; i < Math.Min(nF + nD, 139); i++) {
+                        string filepath = @preStr + @"\" + ListInfo[i].X0;
+                        var shellobject = ShellObject.FromParsingName(filepath);
+                        BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
+                        bmp.Freeze();
+                        Dispatcher.Invoke(new Action(delegate {
+                            ListInfo[i].S0 = bmp;
+                            loadOrNot[i] = true;
+                        }));
+                    }
+                });
             }
 
             // Task.Run(() => {
