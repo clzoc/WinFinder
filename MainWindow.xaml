@@ -29,7 +29,7 @@
 
                 <Grid x:Name="LayoutNodeTop" Grid.Row="0" Background="#EEEEEE" MouseLeftButtonDown="Window_MouseLeftButtonDown">
                     <StackPanel x:Name="Traffic" Margin="15,15,0,0" Background="#EEEEEE" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
-                        <Button Click="Window_Close" Margin="0,0,15,0" Width="20" Height="20" Background="#ffffff" BorderThickness="0">
+                        <Button Click="Window_Close" FocusVisualStyle="{x:Null}" Margin="0,0,15,0" Width="20" Height="20" Background="#ffffff" BorderThickness="0">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="20" Background="{TemplateBinding Background}">
@@ -53,7 +53,7 @@
                                 </svgc:SvgViewbox.Style>
                             </svgc:SvgViewbox>
                         </Button>
-                        <Button Click="Window_Minim" Margin="0,0,15,0" Width="20" Height="20" Background="#ffffff" BorderThickness="0">
+                        <Button Click="Window_Minim" FocusVisualStyle="{x:Null}" Margin="0,0,15,0" Width="20" Height="20" Background="#ffffff" BorderThickness="0">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="20" Background="{TemplateBinding Background}">
@@ -77,7 +77,7 @@
                                 </svgc:SvgViewbox.Style>
                             </svgc:SvgViewbox>
                         </Button>
-                        <Button Click="Window_Zoom" Width="20" Height="20" Background="#ffffff" BorderThickness="0" >
+                        <Button Click="Window_Zoom" FocusVisualStyle="{x:Null}" Width="20" Height="20" Background="#ffffff" BorderThickness="0" >
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="20" Background="{TemplateBinding Background}">
@@ -102,7 +102,7 @@
                             </svgc:SvgViewbox>
                         </Button>
                     </StackPanel>
-                    <Button x:Name="PathBack" Click="Window_Back" Margin="205,0,0,0" BorderThickness="0">
+                    <Button x:Name="PathBack" FocusVisualStyle="{x:Null}" Click="Window_Back" Margin="205,0,0,0" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -123,7 +123,7 @@
                         </Button.Style>
                         <svgc:SvgViewbox Height="20" Width="20" Source="/icon/left.svg"/>
                     </Button>
-                    <Button x:Name="PathMove" Click="Window_Retu" Margin="245,0,0,0" BorderThickness="0">
+                    <Button x:Name="PathMove" FocusVisualStyle="{x:Null}" Click="Window_Retu" Margin="245,0,0,0" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -145,7 +145,7 @@
                         <svgc:SvgViewbox Height="20" Width="20" Source="/icon/right.svg"/>
                     </Button>
 
-                    <Button x:Name="ViewListView" Click="ViewListView_Click" Margin="345,0,0,0" BorderThickness="0">
+                    <Button x:Name="ViewListView" FocusVisualStyle="{x:Null}" Click="ViewListView_Click" Margin="345,0,0,0" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -166,7 +166,7 @@
                         </Button.Style>
                         <svgc:SvgViewbox Height="20" Width="20" Source="/icon/list.bullet.svg"/>
                     </Button>
-                    <Button x:Name="ViewGridView" Click="ViewGridView_Click" Margin="385,0,0,0" BorderThickness="0">
+                    <Button x:Name="ViewGridView" FocusVisualStyle="{x:Null}" Click="ViewGridView_Click" Margin="385,0,0,0" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -291,7 +291,7 @@
                                                     </Setter>
                                                 </Style>
                                             </GridViewColumnHeader.Style>
-                                            <TextBlock Text="日期" Margin="12,0,0,0" FontWeight="Bold"/>
+                                            <TextBlock Text="日期" Margin="14,0,0,0" FontWeight="Bold"/>
                                         </GridViewColumnHeader>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
