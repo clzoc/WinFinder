@@ -2,9 +2,11 @@
 
 It looks like the following picture:
 #### ListView
-![屏幕截图 2025-02-23 195936](https://github.com/user-attachments/assets/0badb4fa-0aec-419d-9e6b-002a9e008b63)
+![屏幕截图 2025-02-25 212224](https://github.com/user-attachments/assets/3803539a-b55c-46f1-aefe-6614dc25482c)
+
 #### GridView
-![屏幕截图 2025-02-23 200054](https://github.com/user-attachments/assets/92c0fec4-8466-42e1-9414-5ccffaa0e589)
+![屏幕截图 2025-02-25 211546](https://github.com/user-attachments/assets/805767be-bab6-46b8-b6cf-4a463a07514d)
+
 
 1. Sort according to GridViewColumnHeader (click) ✔
 2. Access any folder or file ✔
@@ -14,6 +16,7 @@ It looks like the following picture:
 6. Multi View like List, Grid ...... ✔
 7. Smooth Virtualizing scroll is accomplished ✔
 8. A large amount of images such as thumbnail can be loaded asynchrony ✔
+9. SideBar icons are optimized 
 
 TODO List:
   1. right mousedown menu
