@@ -2,7 +2,8 @@
 
 It looks like the following picture:
 #### ListView
-![屏幕截图 2025-02-25 212224](https://github.com/user-attachments/assets/3803539a-b55c-46f1-aefe-6614dc25482c)
+![屏幕截图 2025-02-26 155018](https://github.com/user-attachments/assets/21d8958d-530c-4e45-8119-699dd8929b60)
+
 
 #### GridView
 ![屏幕截图 2025-02-25 211546](https://github.com/user-attachments/assets/805767be-bab6-46b8-b6cf-4a463a07514d)
@@ -16,7 +17,7 @@ It looks like the following picture:
 6. Multi View like List, Grid ...... ✔
 7. Smooth Virtualizing scroll is accomplished ✔
 8. A large amount of images such as thumbnail can be loaded asynchrony ✔
-9. SideBar icons are optimized 
+9. SideBar icons are optimized, path of current folder is show in bottom bar ✔
 
 TODO List:
   1. right mousedown menu
