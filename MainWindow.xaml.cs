@@ -36,6 +36,7 @@ using System.Runtime.InteropServices.CustomMarshalers;
 using SharpVectors.Dom.Events;
 using System.Windows.Threading;
 using System.Timers;
+using System.Windows.Forms;
 
 
 namespace WinFinder {
@@ -111,14 +112,14 @@ namespace WinFinder {
             }
         }
 
-        private string gridSpaceInfo = "";
-        public string GridSpaceInfo {
+        private string currentFolder = "";
+        public string CurrentFolder {
             get {
-                return gridSpaceInfo;
+                return currentFolder;
             }
             set {
-                gridSpaceInfo = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GridSpaceInfo"));
+                currentFolder = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentFolder"));
             }
         }
 
@@ -201,10 +202,7 @@ namespace WinFinder {
                 ZoomButton = icon[isZoom];
 
                 Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth - 1, fileHeight * 0.35, 0.5);
-
-                //GridSpaceInfo = GridSpace();
-                //StretchGridViewContainer();
+                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 11, 0.5);
             } else {
                 double h = Height;
                 double w = Width;
@@ -216,98 +214,89 @@ namespace WinFinder {
                 ZoomButton = icon[isZoom];
 
                 Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth - 1, fileHeight * 0.35, 0.5);
-
-                //GridSpaceInfo = GridSpace();
-                //StretchGridViewContainer();
+                ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 11, 0.5);
             }
-            //WindowState = WindowState.Maximized;
         }
 
-        public static readonly double fileHeight = 30;
+        
 
         public ObservableCollection<MyStruct> ListInfo = new ObservableCollection<MyStruct>();        
 
-        private List<string> sidePath = new List<string> { @"C:\Users\tsunami", @"C:\Users\tsunami\Desktop", @"C:\Users\tsunami\Downloads", @"C:\Users\tsunami\Pictures", @"C:\Users\tsunami\Videos", @"C:\Users\tsunami\Documents", };
+        private List<string> sidePath = new List<string> { @"C:\Users\tsunami", @"C:\Users\tsunami\Desktop", @"C:\Users\tsunami\Downloads", @"C:\Users\tsunami\Music", @"C:\Users\tsunami\Pictures", @"C:\Users\tsunami\Videos", @"C:\Users\tsunami\Documents", };
 
+        private double fileHeight = 30;
+        private double gridHeight = 150;
         private void ContentView(object sender, RoutedEventArgs e) {
-            GridClipInfo = Window_Corner(175, 115, squircle_radius, 0.5);
+            GridClipInfo = Window_Corner(gridHeight, 115, squircle_radius, 0.5);
 
-            List<string> side = new List<string> { "tsunami", "桌面", "下载", "图片", "视频", "文稿", };
+            List<string> side = new List<string> { "tsunami", "桌面", "下载", "音乐", "图片", "视频", "文稿", };
             List<string> icon = new List<string> {
-                "/icon/folder.badge.person.crop.svg",
-                "/icon/house.fill.svg",
-                "/icon/tray.and.arrow.down.fill.svg",
-                "/icon/camera.fill.svg",
-                "/icon/video.fill.svg",
-                "/icon/doc.fill.svg",
+                "/icon/house.svg",
+                "/icon/pc.svg",
+                "/icon/icloud.and.arrow.down.svg",
+                "/icon/headphones.svg",
+                "/icon/camera.svg",
+                "/icon/film.svg",
+                "/icon/doc.text.svg",
             };
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo item in drives) {
                 sidePath.Add(item.Name);
-                side.Add($"{item.DriveType}({item.Name})");
-                icon.Add("/icon/internaldrive.fill.svg");
+                string place = "";
+                if (item.DriveType.ToString() == "Fixed") {
+                    place = "盘";
+                }                
+                side.Add($"{place}({item.Name})");
+                icon.Add("/icon/internaldrive.svg");
             }
 
             Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
-            ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth - 1, fileHeight * 0.35, 0.5);
+            ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, 11, 0.5);
 
+            //currentFolderRegion.Clip = Geometry.Parse(Window_Corner(35, 325, 10, 0.5));
 
-            PathBack.Height = 35;
-            PathBack.Width = 35;
-            PathBack.HorizontalAlignment = HorizontalAlignment.Left;
+            PathBack.Height = 34;
+            PathBack.Width = 34;
+            PathBack.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             PathBack.VerticalAlignment = VerticalAlignment.Center;
-            PathBack.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 1));
+            PathBack.Clip = Geometry.Parse(Window_Corner(34, 34, 10, 0.5));
 
-            PathMove.Height = 35;
-            PathMove.Width = 35;
-            PathMove.HorizontalAlignment = HorizontalAlignment.Left;
+            PathMove.Height = 34;
+            PathMove.Width = 34;
+            PathMove.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             PathMove.VerticalAlignment = VerticalAlignment.Center;
-            PathMove.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 1));
+            PathMove.Clip = Geometry.Parse(Window_Corner(34, 34, 10, 0.5));
 
-            ViewListView.Height = 35;
-            ViewListView.Width = 35;
-            ViewListView.HorizontalAlignment = HorizontalAlignment.Left;
+            ViewListView.Height = 34;
+            ViewListView.Width = 34;
+            ViewListView.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             ViewListView.VerticalAlignment = VerticalAlignment.Center;
-            ViewListView.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 1));
+            ViewListView.Clip = Geometry.Parse(Window_Corner(34, 34, 10, 0.5));
 
-            ViewGridView.Height = 35;
-            ViewGridView.Width = 35;
-            ViewGridView.HorizontalAlignment = HorizontalAlignment.Left;
+            ViewGridView.Height = 34;
+            ViewGridView.Width = 34;
+            ViewGridView.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             ViewGridView.VerticalAlignment = VerticalAlignment.Center;
-            ViewGridView.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 1));
+            ViewGridView.Clip = Geometry.Parse(Window_Corner(34, 34, 10, 0.5));
 
-            double sideitemheight = 50;
-            SideClipInfo = Window_Corner(sideitemheight, SideBar.ActualWidth, sideitemheight * 0.35, 1);
+            double sideitemheight = 40;
+            SideClipInfo = Window_Corner(sideitemheight, SideBar.ActualWidth, sideitemheight * 0.35, 0.5);
 
             SideBar.Tag = 0;
             for (int i = 0; i < side.Count; i++) {
                 Grid t = new Grid {
                     Height = sideitemheight,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
                 };
-                Binding m = new Binding("Data") {
+                System.Windows.Data.Binding m = new System.Windows.Data.Binding("Data") {
                     Source = SideClip
                 };
                 t.SetBinding(ClipProperty, m);
                 t.Tag = sidePath[i];
-                t.MouseLeftButtonDown += DiskHandler;
-
-                //if (i != 0) {
-                //    DataTrigger d = new DataTrigger {
-                //        Binding = new Binding("IsMouseOver") { Source = t },
-                //        Value = true,
-                //    };
-                //    d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
-                //    Style st = new Style();
-                //    st.Triggers.Add(d);
-                //    t.Style = st;
-                //} else {
-                //    t.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
-                //}
+                t.PreviewMouseLeftButtonDown += DiskHandler;
 
                 DataTrigger d = new DataTrigger {
-                    Binding = new Binding("IsMouseOver") { Source = t },
+                    Binding = new System.Windows.Data.Binding("IsMouseOver") { Source = t },
                     Value = true,
                 };
                 d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
@@ -320,28 +309,21 @@ namespace WinFinder {
                 }
 
                 SvgViewbox s;
-                if (i == 5) {
-                    s = new SvgViewbox {
-                        Height = t.Height - 25,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        Margin = new Thickness(32.5, 0, 0, 0),
-                        Source = new Uri(icon[i], UriKind.Relative),
-                    };
-                } else {
-                    s = new SvgViewbox {
-                        Width = t.Height - 25,
-                        Height = Width,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        Margin = new Thickness(30, 0, 0, 0),
-                        Source = new Uri(icon[i], UriKind.Relative),
-                    };
-                }
+
+                s = new SvgViewbox {
+                    MaxWidth = t.Height - 15,
+                    MaxHeight = t.Height - 15,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                    Margin = new Thickness(0, 0, 100, 0),
+                    Source = new Uri(icon[i], UriKind.Relative),
+                };
 
                 TextBlock textBlock = new TextBlock {
                     Text = side[i],
-                    FontSize = 16,
+                    FontSize = 21,
+                    FontWeight = FontWeights.Regular,
+                    FontFamily = new System.Windows.Media.FontFamily("霞鹜新晰黑 屏幕阅读版"),
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(70, 0, 0, 0),
                 };
@@ -353,7 +335,6 @@ namespace WinFinder {
             }
 
             Change_ItemSource(@"C:\Users\tsunami");
-            //StretchGridViewContainer();
         }
 
 
@@ -363,24 +344,15 @@ namespace WinFinder {
             int gIndex = SideBar.Children.IndexOf(g);
             int cIndex = (int)SideBar.Tag;
             if (s != @pwd) {
-
                 Change_ItemSource(@s);
-                //StretchGridViewContainer();
-
-                g.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
-                Grid c = SideBar.Children[cIndex] as Grid;
-                c.ClearValue(BackgroundProperty);
-                //c.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Transparent"));
-                //DataTrigger d = new DataTrigger {
-                //    Binding = new Binding("IsMouseOver") { Source = c },
-                //    Value = true,
-                //};
-                //d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
-                //Style st = new Style();
-                //st.Triggers.Add(d);
-                //c.Style = st;
-
-                SideBar.Tag = gIndex;
+                if (gIndex != cIndex) {                   
+                    g.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
+                    if (cIndex != -1) {
+                        Grid c = SideBar.Children[cIndex] as Grid;
+                        c.ClearValue(BackgroundProperty);
+                    }                  
+                    SideBar.Tag = gIndex;
+                }
             }
             return;
         }
@@ -408,9 +380,8 @@ namespace WinFinder {
                 if (index != -1) {
                     RoutedEventArgs o = new RoutedEventArgs();
                     DiskHandler(SideBar.Children[index], o);
-                } else {
+                } else {                    
                     Change_ItemSource(@next);
-                    //StretchGridViewContainer();
                 }
             } else {
                 return;
@@ -421,8 +392,179 @@ namespace WinFinder {
             if (once == "") {
                 return;
             }
-            Change_ItemSource(@once);
-            //StretchGridViewContainer();
+            int index = sidePath.IndexOf(@once);
+            if (index != -1) {
+                RoutedEventArgs o = new RoutedEventArgs();
+                DiskHandler(SideBar.Children[index], o);
+            } else {
+                Change_ItemSource(@once);
+            }
+            return;
+        }
+
+        private void Change_ItemSource(string str) {
+            List<string> pwdPa = new List<string> { };
+            List<string> pwdFu = new List<string> { };
+            string temp = "";
+            for (int i = 0; i < str.Length; i++) {               
+                if (str[i] != '\\') {
+                    temp +=  str[i].ToString();
+                } else {                    
+                    if (temp == "C:" || temp == "D:") {
+                        temp += @"\";
+                        DriveInfo dr = new DriveInfo(@temp);
+                        ExtraInfo.Text = $"共 {ByteToValue(dr.TotalSize)} 可用 {ByteToValue(dr.TotalFreeSpace)} ";                        
+                        pwdFu.Add(temp);
+                    } else {
+                        pwdFu.Add(str.Substring(0, i));
+                    }
+                    pwdPa.Add(temp);
+                    temp = "";                  
+                }
+            }
+            if (temp != "") {
+                if (temp == "C:" || temp == "D:") {
+                    temp += @"\";
+                }
+                pwdPa.Add(temp);
+                temp = "";
+                pwdFu.Add(str.Substring(0));
+            }
+
+            pwdInfo.Children.Clear();
+            for (int i = 0; i < pwdPa.Count; i++) {
+                var shellUnit = ShellObject.FromParsingName(pwdFu[i]);
+                BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                shellUnit.Dispose();
+                System.Windows.Controls.Image pwdItemImg = new System.Windows.Controls.Image {
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Height = 25,
+                    Width = 25,
+                    Margin = new Thickness(8, 0, 5, 0),
+                    Source = imp
+                };
+
+                TextBlock pwdItemText = new TextBlock {
+                    Text = pwdPa[i],
+                    FontSize = 15,
+                    FontWeight = FontWeights.Regular,
+                    FontFamily = new System.Windows.Media.FontFamily("霞鹜新晰黑 屏幕阅读版"),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    // Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Transparent")),
+                    Margin = new Thickness(0, 0, 8, 0),
+                };
+
+                StackPanel t = new StackPanel {
+                    Orientation = System.Windows.Controls.Orientation.Horizontal,
+                    Height = 34,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(2, 0, 2, 0),
+                    Tag = pwdFu[i]
+                };
+                t.PreviewMouseLeftButtonDown += PwdBarClick;
+
+                DataTrigger d = new DataTrigger {
+                    Binding = new System.Windows.Data.Binding("IsMouseOver") { Source = t },
+                    Value = true,
+                };
+                d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
+                Style st = new Style();
+                st.Triggers.Add(d);
+                t.Style = st;
+                t.Children.Add(pwdItemImg);
+                t.Children.Add(pwdItemText);
+                t.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+                double desiredWidth = t.DesiredSize.Width;
+                t.Clip = Geometry.Parse(Window_Corner(34, t.DesiredSize.Width - 4, 12, 0.5));
+
+                if (i != 0) {
+                    SvgViewbox s = new SvgViewbox {
+                        MaxWidth = 10,
+                        MaxHeight = 10,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 0, 0),
+                        Source = new Uri("icon/right.svg", UriKind.Relative),
+                    };
+                    pwdInfo.Children.Add(s);
+                }
+                pwdInfo.Children.Add(t);               
+            }
+
+            pwd = str;
+            DirectoryInfo di = new DirectoryInfo(@str);          
+            FileInfo[] fics = di.GetFiles();
+            var fic = fics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
+            DirectoryInfo[] dics = di.GetDirectories();
+            var dic = dics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
+
+            int nF = fic.Count; int nD = dic.Count;
+
+            ExtraInfo.Text += $"共 {nF + nD} 项";
+
+            IsLoadedFlag.Clear();
+            ListInfo.Clear();
+
+            for (int i = 0; i < nF; i++) {
+                ListInfo.Add(new MyStruct() { X0 = fic[i].Name, X1 = fic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fic[i].Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fic[i].Length), X4 = fic[i].Length });
+                IsLoadedFlag.Add(false);
+            }
+            for (int i = 0; i < nD; i++) {
+                ListInfo.Add(new MyStruct() { X0 = dic[i].Name, X1 = dic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", X4 = -1 });
+                IsLoadedFlag.Add(false);
+            }
+
+            string preStr = @pwd;
+            if (@pwd == @"C:\" || @pwd == @"D:\") {
+                preStr = pwd.Replace(@"\", @"");
+            }
+
+            int slashIndex = (@preStr).LastIndexOf(@"\") + 1;
+            CurrentFolder = (@pwd).Substring(slashIndex);
+
+            if (nF + nD > 0) {
+                if (GridViewContainer.IsVisible == false) {
+                    FILEINFOMATION.ScrollIntoView(FILEINFOMATION.Items[0]);
+                } else {
+                    ScrollViewer scrollViewer = VisualTreeHelper.GetChild(GridViewContainer, 0) as ScrollViewer;
+                    scrollViewer.ScrollToTop();
+                }
+                Task.Run(() => {
+                    Parallel.For(0, 3, i => {
+                        for (int j = 0 + i; j < Math.Min(nF + nD, 150); j += 3) {
+                            string file = @preStr + @"\" + ListInfo[j].X0;
+                            var shellUnit = ShellObject.FromParsingName(file);
+                            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                            shellUnit.Dispose();
+                            imp.Freeze();
+                            int localIndex = j;
+                            Dispatcher.InvokeAsync(new Action(delegate {
+                                ListInfo[localIndex].S0 = imp;
+                                IsLoadedFlag[localIndex] = true;
+                            }));
+                        }
+                    });
+                    //for (int i = 0; i < Math.Min(nF + nD, 139); i++) {
+                    //    string filepath = @preStr + @"\" + ListInfo[i].X0;
+                    //    var shellobject = ShellObject.FromParsingName(filepath);
+                    //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
+                    //    bmp.Freeze();
+                    //    Dispatcher.Invoke(new Action(delegate {
+                    //        ListInfo[i].S0 = bmp;
+                    //        IsLoadedFlag[i] = true;
+                    //    }));
+                    //}
+                });
+            }
+        }
+
+        private void PwdBarClick(object sender, MouseButtonEventArgs e) {
+            StackPanel s = sender as StackPanel;
+            string fu = s.Tag as string;
+            if (@pwd == fu) {
+                return;
+            }
+            Change_ItemSource(@fu);
         }
 
         private string pwd = @"C:\Users\tsunami";
@@ -431,7 +573,7 @@ namespace WinFinder {
             if (e.ClickCount != 2) {
                 return;
             }
-            ListViewItem temp = sender as ListViewItem;
+            System.Windows.Controls.ListViewItem temp = sender as System.Windows.Controls.ListViewItem;
             MyStruct myStruct = temp.DataContext as MyStruct; ;
             string str;
             string strType;
@@ -460,8 +602,13 @@ namespace WinFinder {
                     RoutedEventArgs o = new RoutedEventArgs();
                     DiskHandler(SideBar.Children[index], o);
                 } else {
+                    int cIndex = (int)SideBar.Tag;
+                    if (cIndex != -1) {
+                        Grid c = SideBar.Children[cIndex] as Grid;
+                        c.ClearValue(BackgroundProperty);
+                        SideBar.Tag = -1;
+                    }                    
                     Change_ItemSource(@str);
-                    //StretchGridViewContainer();
                 }
             } else {
                 Process.Start(@str);
@@ -473,28 +620,9 @@ namespace WinFinder {
             // e.LeftButton == MouseButtonState.Pressed            
             Grid temp = sender as Grid;
             if (e.ClickCount == 1) {
-                //if (recordGrid != null) {
-                //recordGrid.ClearValue(BackgroundProperty);
-                //c.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Transparent"));
-                //DataTrigger d = new DataTrigger {
-                //    Binding = new Binding("IsMouseOver") { Source = recordGrid },
-                //    Value = true,
-                //};
-                //d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")) });
-                //Style st = new Style();
-                //st.Triggers.Add(d);
-                //recordGrid.Style = st;
-                // recordGrid.ClearValue(BackgroundProperty);
-                // Trace.WriteLine($"{recordGrid.Margin}");
-                // Trace.WriteLine($"{recordGrid.ActualWidth}");
-                // recordGrid.SetCurrentValue(BackgroundProperty, System.Windows.Media.Brushes.Transparent);
-                // recordGrid.Background = System.Windows.Media.Brushes.Transparent;                    
-                // recordGrid.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
-                //}
                 // temp.SetCurrentValue(BackgroundProperty, new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8")));
-
                 recordGrid?.ClearValue(BackgroundProperty);
-                temp.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9ABAE8"));
+                temp.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2962D9"));
                 recordGrid = temp;
             }
 
@@ -530,166 +658,20 @@ namespace WinFinder {
                     RoutedEventArgs o = new RoutedEventArgs();
                     DiskHandler(SideBar.Children[index], o);
                 } else {
+                    int cIndex = (int)SideBar.Tag;
+                    if (cIndex != -1) {
+                        Grid c = SideBar.Children[cIndex] as Grid;
+                        c.ClearValue(BackgroundProperty);
+                        SideBar.Tag = -1;
+                    }
                     Change_ItemSource(@str);
-                    //StretchGridViewContainer();
                 }
             } else {
                 Process.Start(@str);
             }
         }
-        
 
-        private void Change_ItemSource(string str) {
-            pwd = str;
-            DirectoryInfo di = new DirectoryInfo(@str);
-            FileInfo[] fics = di.GetFiles();
-            var fic = fics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
-            DirectoryInfo[] dics = di.GetDirectories();
-            var dic = dics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
-            
-            int nF = fic.Count; int nD = dic.Count;
-
-            loadOrNot.Clear();   
-            ListInfo.Clear();
-            // MessageBox.Show($"{DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            // Trace.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            for (int i = 0; i < nF; i++) {
-                ListInfo.Add(new MyStruct() { X0 = fic[i].Name, X1 = fic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fic[i].Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fic[i].Length), X4 = fic[i].Length });
-                loadOrNot.Add(false);
-            }
-            for (int i = 0; i < nD; i++) {
-                ListInfo.Add(new MyStruct() { X0 = dic[i].Name, X1 = dic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = "— —", X4 = -1 });
-                loadOrNot.Add(false);
-            }
-
-            string preStr = @pwd;
-            if (@pwd == @"C:\" || @pwd == @"D:\") {
-                preStr = pwd.Replace(@"\", @"");
-            }            
-
-            if (nF + nD > 0) {
-                if (GridViewContainer.IsVisible == false) {
-                    FILEINFOMATION.ScrollIntoView(FILEINFOMATION.Items[0]);
-                } else {
-                    ScrollViewer scrollViewer = VisualTreeHelper.GetChild(GridViewContainer, 0) as ScrollViewer;
-                    scrollViewer.ScrollToTop();
-                }
-                Task.Run(() => {
-                    //    Parallel.For(0, 3, i => {
-                    //        for (int j = 0 + i; j < Math.Min(nF + nD, 139); j += 3) {
-                    //            string file = @preStr + @"\" + ListInfo[j].X0;
-                    //            var shellUnit = ShellObject.FromParsingName(file);
-                    //            BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                    //            imp.Freeze();
-                    //            int localIndex = j;
-                    //            Dispatcher.InvokeAsync(new Action(delegate {
-                    //                ListInfo[localIndex].S0 = imp;
-                    //                loadOrNot[localIndex] = true;
-
-                    //            }));
-                    //        }
-                    //    });
-                    for (int i = 0; i < Math.Min(nF + nD, 139); i++) {
-                        string filepath = @preStr + @"\" + ListInfo[i].X0;
-                        var shellobject = ShellObject.FromParsingName(filepath);
-                        BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-                        bmp.Freeze();
-                        Dispatcher.Invoke(new Action(delegate {
-                            ListInfo[i].S0 = bmp;
-                            loadOrNot[i] = true;
-                        }));
-                    }
-                });
-            }
-
-            // Task.Run(() => {
-            //Parallel.For(0, nF + nD, index => {
-            //    string filepath = pwd + @"\" + ListInfo[index].X0;
-            //    var shellobject = ShellObject.FromParsingName(@filepath);
-            //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-            //    bmp.Freeze();
-            //    Dispatcher.BeginInvoke(new Action(delegate { // Dispatcher.CheckAccess() 检查在UI线程上执行操作 
-            //        BitmapFrame frame = BitmapFrame.Create(bmp);
-            //        ListInfo[index].S0 = frame;
-            //        // ListInfo[index].S0 = bmp;
-            //    }));
-            //});
-            //});
-
-            //string temp = pwd;
-            //DriveInfo[] drives = DriveInfo.GetDrives();
-            //for (int i = 0; i < drives.Length; i++) {
-            //    if (drives[i].Name == pwd) {
-            //        temp = pwd.Substring(0, pwd.Length - 1);
-            //    }
-            //}
-            //Parallel.For(0, nF + nD, index => {
-            //    string filepath = $@"{temp}\{ListInfo[index].X0}";
-            //    var shellobject = ShellObject.FromParsingName(@filepath);
-            //    Dispatcher.BeginInvoke(new Action(delegate {
-            //        BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-            //        ListInfo[index].S0 = bmp;
-            //        shellobject.Dispose();
-            //    }));
-            //});
-
-            //Task.Run(() => {
-            //    //Thread.Sleep(4000);
-            //    //MessageBox.Show($"Target Route Path is {pwd}");
-
-            //    for (int i = 0; i < nF; i++) {
-            //        Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(fic[i].FullName);
-            //        Bitmap bmp = icon.ToBitmap();
-            //        BitmapSource smp = ToBitmapSource(bmp);
-            //        Dispatcher.Invoke(new Action(delegate {
-            //            BitmapFrame frame = BitmapFrame.Create(smp);
-            //            ListInfo[i].S0 = frame;
-            //        }));
-            //    }
-            //    for (int i = 0; i < nD; i++) {
-            //        SHFILEINFO shinfo = new SHFILEINFO();
-            //        IntPtr iconIntPrt = SHGetFileInfo(dic[i].FullName, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_LARGEICON);
-            //        Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
-            //        Bitmap bmp = icon.ToBitmap();
-            //        BitmapSource smp = ToBitmapSource(bmp);
-            //        Dispatcher.Invoke(new Action(delegate {
-            //            BitmapFrame frame = BitmapFrame.Create(smp);
-            //            ListInfo[i + nF].S0 = frame;
-            //        }));
-            //    }
-            //});
-        }
-
-        //private BitmapSource ToBitmapSource(Bitmap bitmap) {
-        //    MemoryStream stream = new MemoryStream();
-        //    bitmap.Save(stream, ImageFormat.Png);
-        //    stream.Position = 0;
-        //    BitmapImage bitmapImage = new BitmapImage();
-        //    bitmapImage.BeginInit();
-        //    bitmapImage.StreamSource = stream;
-        //    bitmapImage.EndInit();
-        //    return bitmapImage;
-        //}
-
-        //[StructLayout(LayoutKind.Sequential)] // Struct used by SHGetFileInfo function
-        //private struct SHFILEINFO {
-        //    public IntPtr hIcon;
-        //    public int iIcon;
-        //    public uint dwAttributes;
-        //    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        //    public string szDisplayName;
-        //    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-        //    public string szTypeName;
-        //};
-
-        //[DllImport("shell32.dll")]
-        //private static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
-
-        //private const uint SHGFI_ICON = 0x100;
-        //private const uint SHGFI_LARGEICON = 0x0;
-        //private const uint SHGFI_SMALLICON = 0x000000001;
-
-        public ObservableCollection<bool> loadOrNot = new ObservableCollection<bool>();
+        public ObservableCollection<bool> IsLoadedFlag = new ObservableCollection<bool>();
         private void Timer_Tick(object sender, EventArgs e) {
             //Prevent timer from looping
             (sender as DispatcherTimer).Stop();
@@ -704,7 +686,7 @@ namespace WinFinder {
 
             int rowIndex = (int)Math.Floor(offsetScroll / 30);
             if (GridViewContainer.IsVisible == true) {
-                int rowIndexGrid = (int)Math.Floor(offsetScroll / 175);
+                int rowIndexGrid = (int)Math.Floor(offsetScroll / gridHeight);
                 if (isZoom == 0) {
                     rowIndex = rowIndexGrid * 8;
                 } else {
@@ -716,47 +698,38 @@ namespace WinFinder {
             if (@pwd == @"C:\" || @pwd == @"D:\") {
                 preStr = pwd.Replace(@"\", @"");
             }
-            //for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 129); i++) {
-            //    string filepath = @preStr + @"\" + ListInfo[i].X0;
-              
-            //    int localIndex = i;
-            //    if (loadOrNot[localIndex] == false) {
-            //        var shellobject = ShellObject.FromParsingName(filepath);
-            //        BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-            //        ListInfo[localIndex].S0 = bmp;
-            //        loadOrNot[localIndex] = true;
-            //    }
-            //}
+
             Task.Run(() => {
 
-                //Parallel.For(0, 3, i => {
-                //    for (int j = Math.Max(0, rowIndex - 10) + i; j < Math.Min(nF + nD, rowIndex + 129); j += 3) {
-                //        string file = @preStr + @"\" + ListInfo[j].X0;
-                //        var shellUnit = ShellObject.FromParsingName(file);
-                //        BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                //        imp.Freeze();
-                //        int localIndex = j;
-                //        Dispatcher.InvokeAsync(new Action(delegate {
-                //            if (loadOrNot[localIndex] == false) {
-                //                ListInfo[localIndex].S0 = imp;
-                //                loadOrNot[localIndex] = true;
-                //            }
-                //        }));
-                //    }
-                //});
+                Parallel.For(0, 3, i => {
+                    for (int j = Math.Max(0, rowIndex - 10) + i; j < Math.Min(nF + nD, rowIndex + 140); j += 3) {
+                        string file = @preStr + @"\" + ListInfo[j].X0;
+                        var shellUnit = ShellObject.FromParsingName(file);
+                        BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
+                        shellUnit.Dispose();
+                        imp.Freeze();
+                        int localIndex = j;
+                        Dispatcher.InvokeAsync(new Action(delegate {
+                            if (IsLoadedFlag[localIndex] == false) {
+                                ListInfo[localIndex].S0 = imp;
+                                IsLoadedFlag[localIndex] = true;
+                            }
+                        }));
+                    }
+                });
 
-                for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 129); i++) {
-                    string filepath = @preStr + @"\" + ListInfo[i].X0;
-                    var shellobject = ShellObject.FromParsingName(filepath);
-                    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
-                    bmp.Freeze();
-                    Dispatcher.Invoke(new Action(delegate {
-                        if (loadOrNot[i] == false) {
-                            ListInfo[i].S0 = bmp;
-                            loadOrNot[i] = true;
-                        }
-                    }));
-                }
+                //for (int i = Math.Max(0, rowIndex - 10); i < Math.Min(nF + nD, rowIndex + 129); i++) {
+                //    string filepath = @preStr + @"\" + ListInfo[i].X0;
+                //    var shellobject = ShellObject.FromParsingName(filepath);
+                //    BitmapSource bmp = shellobject.Thumbnail.LargeBitmapSource;
+                //    bmp.Freeze();
+                //    Dispatcher.Invoke(new Action(delegate {
+                //        if (IsLoadedFlag[i] == false) {
+                //            ListInfo[i].S0 = bmp;
+                //            IsLoadedFlag[i] = true;
+                //        }
+                //    }));
+                //}
             });
         }
 
@@ -770,7 +743,7 @@ namespace WinFinder {
         }
 
         private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e) {
-            if (!(sender is ListView view)) {
+            if (!(sender is System.Windows.Controls.ListView view)) {
                 return;
             }
             if (e.OriginalSource is GridViewColumnHeader header) {
@@ -785,7 +758,7 @@ namespace WinFinder {
                     } else {
                         dt = clickedColumn.CellTemplate.LoadContent() as TextBlock;
                     }
-                    Binding myBinding;
+                    System.Windows.Data.Binding myBinding;
                     if (bt.Text == "大小") {
                         myBinding = BindingOperations.GetBinding(dt, TagProperty);
                     } else {
@@ -821,14 +794,6 @@ namespace WinFinder {
         private void ViewGridView_Click(object sender, RoutedEventArgs e) {
             FILEINFOMATION.Visibility = Visibility.Collapsed;
             GridViewContainer.Visibility = Visibility.Visible;
-            //GridSpaceInfo = GridSpace();
-            //StretchGridViewContainer();
-        }
-
-        private Panel GetItemsPanel(DependencyObject itemsControl) {
-            ItemsPresenter itemsPresenter = GetVisualChild<ItemsPresenter>(itemsControl);
-            Panel itemsPanel = VisualTreeHelper.GetChild(itemsPresenter, 0) as Panel;
-            return itemsPanel;
         }
 
         private static T GetVisualChild<T>(DependencyObject parent) where T : Visual {
@@ -847,55 +812,6 @@ namespace WinFinder {
             }
             return child;
         }
-
-        private void StretchGridViewContainer() {
-            if (GridViewContainer.Visibility != Visibility.Visible) {
-                return;
-            }
-            GridViewContainer.UpdateLayout();
-            // double w = Math.Floor(RefGrid.ActualWidth) - 1;
-            double w = Math.Floor(RefGrid.ActualWidth);
-            int numberOfEachRow = (int)Math.Floor(w / 130);
-            int space = numberOfEachRow - 1;
-            int numberOfItems = GridViewContainer.Items.Count;
-            double spd = (w % 130) / (2 * numberOfEachRow);
-
-            WrapPanel wrapContainer = GetItemsPanel(GridViewContainer) as WrapPanel;
-
-            for (int i = 0; i < numberOfItems; i++) {
-                Grid indexHandside = VisualTreeHelper.GetChild(wrapContainer.Children[i], 0) as Grid;
-                if (i % numberOfEachRow == 0) {
-                    indexHandside.Margin = new Thickness(0, 0, 2 * spd, 0);
-                    indexHandside.UpdateLayout();
-                } else if (i % numberOfEachRow == space) {
-                    indexHandside.Margin = new Thickness(2 * spd, 0, 0, 0);
-                    indexHandside.UpdateLayout();
-                } else {
-                    indexHandside.Margin = new Thickness(spd, 0, spd, 0);
-                    indexHandside.UpdateLayout();
-                }
-            }
-            //TextBlock tttks = rightHandside.Children[1] as TextBlock;
-            //Trace.WriteLine($"For Debug Information {tttks.Text}");
-
-            //GridViewContainer.UpdateLayout();
-            //double kzu = 0;
-            //for (int i = 0; i < numberOfEachRow; i++) {
-            //    Grid rightHandside = VisualTreeHelper.GetChild(wrapContainer.Children[i], 0) as Grid;
-            //    kzu += rightHandside.ActualWidth;
-            //}
-            //kzu += spd * 2 * numberOfEachRow;
-            //Trace.WriteLine($"For Debug Information {kzu}");
-            //Trace.WriteLine($"For Debug Information {w}");
-            //Trace.WriteLine($"For Debug Information {wrapContainer.ActualWidth}");
-
-            //Grid ktv = VisualTreeHelper.GetChild(knv.Children[0], 0) as Grid;
-            //Trace.WriteLine($"For Debug Information {GridViewContainer.ItemContainerGenerator.ContainerFromIndex(0)}");
-            //MyStruct kkk = (GridViewContainer.Items)[1] as MyStruct;
-            //Trace.WriteLine($"For Debug Information {kkk.X0}");
-            //Trace.WriteLine($"For Debug Information {GetItemsPanel(GridViewContainer)}");
-        }
-
     }
     public class MyStruct : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;

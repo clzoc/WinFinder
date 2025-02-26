@@ -1,3 +1,10 @@
+C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.csproj.AssemblyReference.cache
+C:\Action\wpf\WpfApp2\obj\x64\Debug\ScrollViewer.baml
+C:\Action\wpf\WpfApp2\obj\x64\Debug\ScrollBar.baml
+C:\Action\wpf\WpfApp2\obj\x64\Debug\MainWindow.g.cs
+C:\Action\wpf\WpfApp2\obj\x64\Debug\App.g.cs
+C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder_MarkupCompile.cache
+C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder_MarkupCompile.lref
 C:\Action\wpf\WpfApp2\bin\x64\Debug\WinFinder.exe.config
 C:\Action\wpf\WpfApp2\bin\x64\Debug\WinFinder.exe
 C:\Action\wpf\WpfApp2\bin\x64\Debug\WinFinder.pdb
@@ -11,6 +18,7 @@ C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Model.dll
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Rendering.Gdi.dll
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Rendering.Wpf.dll
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Runtime.Wpf.dll
+C:\Action\wpf\WpfApp2\bin\x64\Debug\VirtualizingWrapPanel.dll
 C:\Action\wpf\WpfApp2\bin\x64\Debug\Microsoft.WindowsAPICodePack.xml
 C:\Action\wpf\WpfApp2\bin\x64\Debug\Microsoft.WindowsAPICodePack.Shell.xml
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Converters.Wpf.xml
@@ -21,13 +29,6 @@ C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Model.xml
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Rendering.Gdi.xml
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Rendering.Wpf.xml
 C:\Action\wpf\WpfApp2\bin\x64\Debug\SharpVectors.Runtime.Wpf.xml
-C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.csproj.AssemblyReference.cache
-C:\Action\wpf\WpfApp2\obj\x64\Debug\ScrollViewer.baml
-C:\Action\wpf\WpfApp2\obj\x64\Debug\ScrollBar.baml
-C:\Action\wpf\WpfApp2\obj\x64\Debug\MainWindow.g.cs
-C:\Action\wpf\WpfApp2\obj\x64\Debug\App.g.cs
-C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder_MarkupCompile.cache
-C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder_MarkupCompile.lref
 C:\Action\wpf\WpfApp2\obj\x64\Debug\App.baml
 C:\Action\wpf\WpfApp2\obj\x64\Debug\MainWindow.baml
 C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.g.resources
@@ -37,4 +38,3 @@ C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.csproj.CoreCompileInputs.cache
 C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.csproj.Up2Date
 C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.exe
 C:\Action\wpf\WpfApp2\obj\x64\Debug\WinFinder.pdb
-C:\Action\wpf\WpfApp2\bin\x64\Debug\VirtualizingWrapPanel.dll

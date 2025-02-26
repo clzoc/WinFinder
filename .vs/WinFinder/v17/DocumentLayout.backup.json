@@ -3,15 +3,12 @@
   "WorkspaceRootPath": "C:\\Action\\wpf\\WpfApp2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|c:\\action\\wpf\\wpfapp2\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\e9e7dacc17ea966398f6104756da2a7a060c1b866afe0bb9b418f7efba8b3eea\\ShellObject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|C:\\Action\\wpf\\WpfApp2\\scrollviewer.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -37,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -49,20 +46,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ShellObject.cs",
-              "DocumentMoniker": "C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\e9e7dacc17ea966398f6104756da2a7a060c1b866afe0bb9b418f7efba8b3eea\\ShellObject.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\e9e7dacc17ea966398f6104756da2a7a060c1b866afe0bb9b418f7efba8b3eea\\ShellObject.cs",
-              "ToolTip": "C:\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\e9e7dacc17ea966398f6104756da2a7a060c1b866afe0bb9b418f7efba8b3eea\\ShellObject.cs",
-              "RelativeToolTip": "..\\..\\..\\Users\\tsunami\\AppData\\Local\\Temp\\.vsdbgsrc\\e9e7dacc17ea966398f6104756da2a7a060c1b866afe0bb9b418f7efba8b3eea\\ShellObject.cs",
-              "ViewState": "AgIAADQBAACA0czMzMwgwDwBAAADAAAAAQAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-23T08:01:40.064Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "App.xaml",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\App.xaml",
               "RelativeDocumentMoniker": "App.xaml",
@@ -92,14 +76,14 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Action\\wpf\\WpfApp2\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAOMCAAAADmZmZmYqwPcCAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAMwBAAAAAAAAAAAUwN4BAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-12T14:58:02.997Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "ScrollViewer.xaml",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\ScrollViewer.xaml",
               "RelativeDocumentMoniker": "ScrollViewer.xaml",
@@ -111,7 +95,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "ScrollBar.xaml",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\ScrollBar.xaml",
               "RelativeDocumentMoniker": "ScrollBar.xaml",
@@ -123,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "C:\\Action\\wpf\\WpfApp2\\App.xaml.cs",
               "RelativeDocumentMoniker": "App.xaml.cs",

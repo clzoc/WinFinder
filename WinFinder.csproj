@@ -254,5 +254,36 @@
   <ItemGroup>
     <Resource Include="icon\Close_Button_Hover_M2.svg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\arrow.down.app.svg" />
+    <Resource Include="icon\arrow.down.circle.svg" />
+    <Resource Include="icon\doc.svg" />
+    <Resource Include="icon\doc.text.svg" />
+    <Resource Include="icon\headphones.circle.svg" />
+    <Resource Include="icon\headphones.svg" />
+    <Resource Include="icon\house.circle.svg" />
+    <Resource Include="icon\house.svg" />
+    <Resource Include="icon\icloud.and.arrow.down.svg" />
+    <Resource Include="icon\music.note.tv.svg" />
+    <Resource Include="icon\pc.svg" />
+    <Resource Include="icon\photo.tv.svg" />
+    <Resource Include="icon\play.tv.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\internaldrive.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\camera.shutter.button.svg" />
+    <Resource Include="icon\camera.svg" />
+    <Resource Include="icon\film.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\rectangle.on.rectangle.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon\arrow.left.app.svg" />
+    <Resource Include="icon\arrow.right.app.svg" />
+    <Resource Include="icon\arrow.up.app.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

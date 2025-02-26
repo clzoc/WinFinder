@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icon/close_button_hover_m2.svg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icon/arrow.up.app.svg")]
 
 
