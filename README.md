@@ -5,9 +5,7 @@ It looks like the following picture:
 ![屏幕截图 2025-02-28 125622](https://github.com/user-attachments/assets/22990997-e32e-4acc-954c-22dd882775f4)
 
 #### GridView
-![屏幕截图 2025-02-28 125653](https://github.com/user-attachments/assets/e378a09d-703b-438f-bab3-e4e42f0805bc)
-
-
+![屏幕截图 2025-02-28 164749](https://github.com/user-attachments/assets/bc23eae0-0698-47fd-b6f4-fb3a3682deae)
 
 
 1. Sort according to GridViewColumnHeader (click) ✔
