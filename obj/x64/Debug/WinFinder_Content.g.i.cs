@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icon/arrow.up.app.svg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ico/macintosh_hd.png")]
 
 
