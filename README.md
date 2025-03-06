@@ -5,7 +5,8 @@ It looks like the following picture:
 ![屏幕截图 2025-02-28 125622](https://github.com/user-attachments/assets/22990997-e32e-4acc-954c-22dd882775f4)
 
 #### GridView
-![屏幕截图 2025-02-28 164749](https://github.com/user-attachments/assets/bc23eae0-0698-47fd-b6f4-fb3a3682deae)
+![屏幕截图 2025-03-06 090059](https://github.com/user-attachments/assets/4a92a866-2df3-418b-9ddf-c45c979bb949)
+
 
 
 1. Sort according to GridViewColumnHeader (click) ✔
@@ -18,6 +19,7 @@ It looks like the following picture:
 8. A large amount of images such as thumbnail can be loaded asynchrony ✔
 9. SideBar icons are optimized, path of current folder is show in bottom bar ✔
 10. Folder thumbnail is updated ✔
+11. Thumbnail for PDF, TXT, BAT, CUB is supported, vivid shadow is added ✔
 
 TODO List:
   1. right mousedown menu
