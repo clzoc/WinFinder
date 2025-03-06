@@ -2,7 +2,7 @@
 
 It looks like the following picture:
 #### ListView
-![屏幕截图 2025-02-28 125622](https://github.com/user-attachments/assets/22990997-e32e-4acc-954c-22dd882775f4)
+![屏幕截图 2025-03-06 091040](https://github.com/user-attachments/assets/31e3388e-8fe4-4e67-b50f-93fa765ca7d8)
 
 #### GridView
 ![屏幕截图 2025-03-06 090059](https://github.com/user-attachments/assets/4a92a866-2df3-418b-9ddf-c45c979bb949)
