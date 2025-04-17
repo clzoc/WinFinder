@@ -1,27 +1,44 @@
-## Windows File Manager with MacOS Style Design, include continuous curvature corner, high saturation color, exquisite icons and similar animation.
+# WinFinder - macOS风格Windows文件管理器
 
-It looks like the following picture:
-#### ListView
-![屏幕截图 2025-03-06 091040](https://github.com/user-attachments/assets/31e3388e-8fe4-4e67-b50f-93fa765ca7d8)
+![应用截图](https://github.com/user-attachments/assets/31e3388e-8fe4-4e67-b50f-93fa765ca7d8)
 
-#### GridView
-![屏幕截图 2025-03-06 090059](https://github.com/user-attachments/assets/4a92a866-2df3-418b-9ddf-c45c979bb949)
+具有macOS设计风格的Windows文件管理器，包含以下特性：
+- 连续曲率圆角窗口
+- 高饱和度色彩方案
+- 精美SVG图标系统
+- 流畅动画过渡效果
 
 
 
-1. Sort according to GridViewColumnHeader (click) ✔
-2. Access any folder or file ✔
-3. Dedicated style management ✔
-4. Virtual Panel ✔
-5. Asynchronous massive image resource ✔
-6. Multi View like List, Grid ...... ✔
-7. Smooth Virtualizing scroll is accomplished ✔
-8. A large amount of images such as thumbnail can be loaded asynchrony ✔
-9. SideBar icons are optimized, path of current folder is show in bottom bar ✔
-10. Folder thumbnail is updated ✔
-11. Thumbnail for PDF, TXT, BAT, CUB is supported, vivid shadow is added ✔
+## 主要功能
 
-TODO List:
-  1. right mousedown menu
-  2. support region select
-  3. a customized thumbnail system with more handsome icon just like macOS
+### 核心功能
+- 📁 双视图模式（列表与网格）
+- 🖱 右键上下文菜单
+- 🎨 自定义主题支持
+- 🔍 快速搜索与导航
+- 📂 大目录虚拟化滚动
+
+### 技术亮点
+- 🖼 异步缩略图加载
+- 📦 虚拟面板渲染
+- 🎮 平滑滚动虚拟化
+- 🖍 Squircle窗口形状
+- 🌈 高DPI支持
+
+## 安装指南
+```bash
+git clone https://github.com/yourrepo/WinFinder.git
+cd WinFinder
+msbuild WinFinder.sln
+```
+
+## 文档体系
+- [架构概述](ARCHITECTURE.md)
+- [开发指南](CONTRIBUTING.md)
+- [图标系统参考](docs/ICONS.md)
+
+## 开发路线
+- [ ] 自定义缩略图系统
+- [ ] 区域选择支持
+- [ ] 增强型上下文菜单

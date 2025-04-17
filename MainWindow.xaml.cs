@@ -68,7 +68,7 @@ namespace WinFinder {
             ClipInfo = Window_Corner(fileHeight, RefGrid.ActualWidth, fileHeight * 0.35, 1);
         }
 
-        private readonly string[] icon = { "/icon/Maximize_Button_Hover_M.svg", "/icon/Maximize_Button_Hover_Zoom_M.svg" };
+        private readonly string[] icon = { "/assets/icons/media/Maximize_Button_Hover_M.svg", "/assets/icons/media/Maximize_Button_Hover_Zoom_M.svg" };
 
         private static readonly double squircle_radius = 20;
 
@@ -235,13 +235,13 @@ namespace WinFinder {
 
             List<string> side = new List<string> { "tsunami", "桌面", "下载", "音乐", "图片", "视频", "文稿", };
             List<string> icon = new List<string> {
-                "/icon/house.svg",
-                "/icon/pc.svg",
-                "/icon/icloud.and.arrow.down.svg",
-                "/icon/headphones.svg",
-                "/icon/camera.svg",
-                "/icon/film.svg",
-                "/icon/doc.text.svg",
+                "/assets/icons/media/house.svg",
+                "/assets/icons/media/pc.svg",
+                "/assets/icons/media/icloud.and.arrow.down.svg",
+                "/assets/icons/media/headphones.svg",
+                "/assets/icons/media/camera.svg",
+                "/assets/icons/media/film.svg",
+                "/assets/icons/document/doc.text.svg",
             };
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo item in drives) {
@@ -251,7 +251,7 @@ namespace WinFinder {
                     place = "盘";
                 }
                 side.Add($"{place}({item.Name})");
-                icon.Add("/icon/internaldrive.svg");
+                icon.Add("/assets/icons/media/internaldrive.svg");
             }
 
             Info = Window_Corner(ActualHeight, ActualWidth, squircle_radius, 1);
@@ -510,7 +510,7 @@ namespace WinFinder {
                         MaxHeight = 10,
                         VerticalAlignment = System.Windows.VerticalAlignment.Center,
                         Margin = new Thickness(5, 0, 5, 0),
-                        Source = new Uri("icon/right.svg", UriKind.Relative),
+                        Source = new Uri("assets/icons/media/right.svg", UriKind.Relative),
                     };
                     pwdInfo.Children.Add(s);
                 }
