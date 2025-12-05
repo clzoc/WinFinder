@@ -942,6 +942,10 @@ namespace WinFinder {
         }
 
         private void PwdBarClick(object sender, MouseButtonEventArgs e) {
+            if (isSublistExist != null) {
+                WorkSpace.Children.Remove(isSublistExist);
+                isSublistExist = null;
+            }
             StackPanel s = sender as StackPanel;
             string fu = s.Tag as string;
             if (@pwd == fu) {
