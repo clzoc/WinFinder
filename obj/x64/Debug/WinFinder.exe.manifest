@@ -511,18 +511,6 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.ValueTuple.dll" size="25232">
-      <assemblyIdentity name="System.ValueTuple" version="4.0.3.0" publicKeyToken="CC7B13FFCD2DDD51" language="neutral" processorArchitecture="msil" />
-      <hash>
-        <dsig:Transforms>
-          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-        </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>6QXRAlhbIsbfBPIZr1y9v6e8Fll56XiLYt9tzBZeEPQ=</dsig:DigestValue>
-      </hash>
-    </dependentAssembly>
-  </dependency>
-  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="VirtualizingWrapPanel.dll" size="58368">
       <assemblyIdentity name="VirtualizingWrapPanel" version="2.2.1.0" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -535,14 +523,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WinFinder.exe" size="14815216">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WinFinder.exe" size="13757936">
       <assemblyIdentity name="WinFinder" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Z8tI8o2hE9CXpbAREYVA5He1FLVCu2xg1G16us8+V1c=</dsig:DigestValue>
+        <dsig:DigestValue>X5u6smBArAo+Y2d7cCfTySjCwdH9baPbFfj6EvHZnWA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

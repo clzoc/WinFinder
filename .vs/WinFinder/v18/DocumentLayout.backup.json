@@ -1,0 +1,144 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Repo\\workDirForGit\\WinFinder\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|e:\\repo\\workdirforgit\\winfinder\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|E:\\Repo\\workDirForGit\\WinFinder\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|E:\\Repo\\workDirForGit\\WinFinder\\mainwindow.sorting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.sorting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|E:\\Repo\\workDirForGit\\WinFinder\\controls\\workspacepane.sorting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:controls\\workspacepane.sorting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|e:\\repo\\workdirforgit\\winfinder\\controls\\workspacepane.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:controls\\workspacepane.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|E:\\Repo\\workDirForGit\\WinFinder\\controls\\workspacepane.selection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:controls\\workspacepane.selection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|E:\\Repo\\workDirForGit\\WinFinder\\mainwindow.selection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B22E698-6518-45BB-B536-8C5374090416}|WinFinder.csproj|solutionrelative:mainwindow.selection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAJQAAAAAAAAAAIAywKQAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T12:14:28.628Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MainWindow.Selection.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.Selection.cs",
+              "RelativeDocumentMoniker": "MainWindow.Selection.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.Selection.cs",
+              "RelativeToolTip": "MainWindow.Selection.cs",
+              "ViewState": "AgIAAKcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T12:15:42.659Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-06T12:13:08.844Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WorkspacePane.Sorting.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.Sorting.cs",
+              "RelativeDocumentMoniker": "Controls\\WorkspacePane.Sorting.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.Sorting.cs",
+              "RelativeToolTip": "Controls\\WorkspacePane.Sorting.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAkwAwAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T12:19:14.288Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WorkspacePane.xaml.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.xaml.cs",
+              "RelativeDocumentMoniker": "Controls\\WorkspacePane.xaml.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.xaml.cs",
+              "RelativeToolTip": "Controls\\WorkspacePane.xaml.cs",
+              "ViewState": "AgIAALECAAAAAAAAAAAwwOQCAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T14:59:11.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.Sorting.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.Sorting.cs",
+              "RelativeDocumentMoniker": "MainWindow.Sorting.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\MainWindow.Sorting.cs",
+              "RelativeToolTip": "MainWindow.Sorting.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T12:20:32.624Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "WorkspacePane.Selection.cs",
+              "DocumentMoniker": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.Selection.cs",
+              "RelativeDocumentMoniker": "Controls\\WorkspacePane.Selection.cs",
+              "ToolTip": "E:\\Repo\\workDirForGit\\WinFinder\\Controls\\WorkspacePane.Selection.cs",
+              "RelativeToolTip": "Controls\\WorkspacePane.Selection.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAAArwFsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T12:19:57.957Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

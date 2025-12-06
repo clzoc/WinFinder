@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\Repo\wpf\WpfApp2\obj\x64\Debug\
+E:\Repo\workDirForGit\WinFinder\obj\x64\Debug\
 WinFinder
 none
 false
 DEBUG;TRACE
-E:\Repo\wpf\WpfApp2\App.xaml
-3-1686286298
+E:\Repo\workDirForGit\WinFinder\App.xaml
+4482539307
 
-51579654133
-170404058047
-MainWindow.xaml;ScrollViewer.xaml;ScrollBar.xaml;
+121637975614
+1701082562301
+MainWindow.xaml;Controls\WorkspacePane.xaml;ScrollViewer.xaml;ScrollBar.xaml;
 
 False
 
