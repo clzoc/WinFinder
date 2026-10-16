@@ -51,20 +51,21 @@
                                                         <Setter Property="Margin" Value="0,0,0,0"/>
                                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                                         <Setter Property="Height" Value="30"/>
-                                                        <Setter Property="Foreground" Value="#000000"/>
+                                                        <Setter Property="Foreground" Value="#18181B"/>
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                         <Setter Property="Clip" Value="{Binding Data, ElementName=FileClip}"/>
                                                         <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Item_MouseDoubleClickForListView"/>
                                                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="ListView.AlternationIndex" Value="1">
-                                                                <Setter Property="Background" Value="#F5F5F5"/>
+                                                                <Setter Property="Background" Value="#FAFAFA"/>
                                                             </Trigger>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#9ABAE8"/>
+                                                                <Setter Property="Background" Value="#F4F4F5"/>
                                                             </Trigger>
                                                             <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="#2962D9"/>
+                                                                <Setter Property="Background" Value="#DBEAFE"/>
+                                                                <Setter Property="Foreground" Value="#1E40AF"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -94,7 +95,7 @@
                                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                                         <Image Source="{Binding S0, IsAsync=True}" Width="25" Height="25">
                                                                             <Image.Effect>
-                                                                                <DropShadowEffect Direction="315" ShadowDepth="0" Color="#bbbbbb" Opacity="0.8" BlurRadius="1"/>
+                                                                                <DropShadowEffect Direction="315" ShadowDepth="0" Color="#38000000" Opacity="0.8" BlurRadius="1"/>
                                                                             </Image.Effect>
                                                                         </Image>
                                                                         <TextBlock Text="{Binding X0}" Margin="5,0,0,0" FontSize="15" FontFamily="Microsoft YaHei UI" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
@@ -240,10 +241,11 @@
                                                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#9ABAE8"/>
+                                                                <Setter Property="Background" Value="#F4F4F5"/>
                                                             </Trigger>
                                                             <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="#2962D9"/>
+                                                                <Setter Property="Background" Value="#DBEAFE"/>
+                                                                <Setter Property="Foreground" Value="#1E40AF"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -288,7 +290,7 @@
                                                                     </Grid.Style>-->
                                                                     <Image Source="{Binding S0, IsAsync=True}" Grid.Row="0" Width="110" Height="100" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                                                                         <Image.Effect>
-                                                                            <DropShadowEffect Direction="315" ShadowDepth="0" Color="#bbbbbb" Opacity="1.0" BlurRadius="5"/>
+                                                                            <DropShadowEffect Direction="315" ShadowDepth="0" Color="#38000000" Opacity="1.0" BlurRadius="5"/>
                                                                         </Image.Effect>
                                                                     </Image>
                                                                 </Grid>

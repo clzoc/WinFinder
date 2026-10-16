@@ -19,14 +19,14 @@
         AllowsTransparency="True"
         Background="Transparent">
     <Window.Resources>
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F4F5F7"/>
-        <SolidColorBrush x:Key="TopBarBackgroundBrush" Color="#FCFCFD"/>
-        <SolidColorBrush x:Key="DividerBrush" Color="#1A0F172A"/>
-        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#ECEEF2"/>
-        <SolidColorBrush x:Key="SidebarHoverBrush" Color="#E7E7EA"/>
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F4F4F5"/>
+        <SolidColorBrush x:Key="TopBarBackgroundBrush" Color="#FAFAFA"/>
+        <SolidColorBrush x:Key="DividerBrush" Color="#1418181B"/>
+        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#ECECEE"/>
+        <SolidColorBrush x:Key="SidebarHoverBrush" Color="#E4E4E7"/>
         <SolidColorBrush x:Key="ControlBackgroundBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ControlHoverBrush" Color="#EEF1F5"/>
-        <SolidColorBrush x:Key="IconBrush" Color="#111827"/>
+        <SolidColorBrush x:Key="ControlHoverBrush" Color="#F4F4F5"/>
+        <SolidColorBrush x:Key="IconBrush" Color="#18181B"/>
     </Window.Resources>
     <Grid Loaded="ContentView">
         <!--<Grid.Effect>
