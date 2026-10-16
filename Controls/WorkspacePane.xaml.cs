@@ -1,4 +1,3 @@
-using SharpVectors.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +6,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,6 +18,8 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using WinFinder;
+using WinFinder.Backend;
+using WinFinder.Utilities;
 
 namespace WinFinder.Controls {
     public partial class WorkspacePane : UserControl, INotifyPropertyChanged {
@@ -30,6 +33,17 @@ namespace WinFinder.Controls {
         private readonly DispatcherTimer timer = new DispatcherTimer {
             Interval = TimeSpan.FromMilliseconds(50)
         };
+
+        private readonly DispatcherTimer directoryRefreshTimer = new DispatcherTimer {
+            Interval = TimeSpan.FromMilliseconds(500)
+        };
+
+        private readonly DispatcherTimer directoryCompensationRefreshTimer = new DispatcherTimer {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+
+        private FileSystemWatcher directoryWatcher;
+        private string watchedDirectory = string.Empty;
 
         private const double squircle_radius = 15;
         private double fileHeight = 30;
@@ -75,12 +89,65 @@ namespace WinFinder.Controls {
             }
         }
 
+        private string searchQuery = string.Empty;
+        public string SearchQuery {
+            get => searchQuery;
+            private set {
+                if (searchQuery != value) {
+                    searchQuery = value ?? string.Empty;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchQuery)));
+                }
+            }
+        }
+
+        private bool isSearchMode;
+        public bool IsSearchMode {
+            get => isSearchMode;
+            private set {
+                if (isSearchMode != value) {
+                    isSearchMode = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSearchMode)));
+                }
+            }
+        }
+
         private int isZoom = 0;
-        private string pwd = @"C:\Users\tsunami";
+        private string pwd = GetDefaultStartPath();
         private string once = @"";
 
         public string CurrentPath => pwd;
 
+        private static string GetDefaultStartPath() {
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            if (!string.IsNullOrWhiteSpace(userProfile) && Directory.Exists(userProfile)) {
+                return userProfile;
+            }
+
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (!string.IsNullOrWhiteSpace(documents) && Directory.Exists(documents)) {
+                return documents;
+            }
+
+            var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.IsReady && d.DriveType == DriveType.Fixed);
+            if (drive != null) {
+                return drive.RootDirectory.FullName;
+            }
+
+            string systemRoot = Path.GetPathRoot(Environment.SystemDirectory);
+            return string.IsNullOrWhiteSpace(systemRoot) ? @"C:\" : systemRoot;
+        }
+
+        private static string NormalizeDirectoryPath(string path) {
+            if (string.IsNullOrWhiteSpace(path)) {
+                return GetDefaultStartPath();
+            }
+
+            string normalized = path.Trim();
+            if (normalized.Length == 2 && normalized[1] == ':') {
+                normalized += @"\";
+            }
+            return normalized;
+        }
         // selection tracking
         private int _selectedCount = 0;
         public int SelectedCount {
@@ -96,6 +163,8 @@ namespace WinFinder.Controls {
             InitializeComponent();
 
             timer.Tick += Timer_Tick;
+            directoryRefreshTimer.Tick += DirectoryRefreshTimer_Tick;
+            directoryCompensationRefreshTimer.Tick += DirectoryCompensationRefreshTimer_Tick;
 
             ListInfo.CollectionChanged += ListInfo_CollectionChanged;
             foreach (var item in ListInfo) {
@@ -112,6 +181,7 @@ namespace WinFinder.Controls {
             _autoScrollTimer.Tick += AutoScrollTimer_Tick;
 
             Loaded += WorkspacePane_Loaded;
+            Unloaded += WorkspacePane_Unloaded;
             SizeChanged += WorkspacePane_SizeChanged;
             RefGrid.SizeChanged += RefGrid_SizeChanged;
             AddHandler(MouseDownEvent, new MouseButtonEventHandler(OnPaneMouseDown), true);
@@ -182,6 +252,13 @@ namespace WinFinder.Controls {
             ChangeDirectory(pwd);
         }
 
+        private void WorkspacePane_Unloaded(object sender, RoutedEventArgs e) {
+            CancelContentLoad();
+            StopDirectoryWatcher();
+            directoryRefreshTimer.Stop();
+            directoryCompensationRefreshTimer.Stop();
+        }
+
         private void WorkspacePane_SizeChanged(object sender, SizeChangedEventArgs e) {
             UpdateClips();
         }
@@ -214,7 +291,7 @@ namespace WinFinder.Controls {
             PathDivider.Stroke = palette.DividerBrush;
             ExtraInfo.Foreground = palette.SecondaryText;
             if (BreadcrumbPopupBorder != null) {
-                BreadcrumbPopupBorder.Background = palette.PaneBackground;
+                BreadcrumbPopupBorder.Background = palette.ControlBackground;
                 BreadcrumbPopupBorder.BorderBrush = palette.DividerBrush;
             }
 
@@ -267,7 +344,7 @@ namespace WinFinder.Controls {
 
             var selectedTrigger = new Trigger { Property = ListViewItem.IsSelectedProperty, Value = true };
             selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, palette.ListSelectedBackground));
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, palette.SidebarSelectedText));
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, palette.ListSelectedText));
             style.Triggers.Add(selectedTrigger);
 
             style.Setters.Add(new EventSetter(UIElement.PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(Item_MouseDoubleClickForListView)));
@@ -294,7 +371,7 @@ namespace WinFinder.Controls {
 
             var selectedTrigger = new Trigger { Property = ListViewItem.IsSelectedProperty, Value = true };
             selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, palette.ListSelectedBackground));
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, palette.SidebarSelectedText));
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, palette.ListSelectedText));
             style.Triggers.Add(selectedTrigger);
 
             return style;
@@ -306,6 +383,9 @@ namespace WinFinder.Controls {
                 if (element is Panel panel) {
                     foreach (var text in panel.Children.OfType<TextBlock>()) {
                         text.Foreground = palette.PrimaryText;
+                    }
+                    foreach (var icon in panel.Children.OfType<ThemedSvgIcon>()) {
+                        icon.IconBrush = palette.PrimaryText;
                     }
                 }
             }
@@ -328,6 +408,12 @@ namespace WinFinder.Controls {
             e.Handled = true;
         }
 
+        private void ClearListInfoItems() {
+            foreach (var item in ListInfo) {
+                item.PropertyChanged -= Item_PropertyChanged;
+            }
+            ListInfo.Clear();
+        }
         private void ListInfo_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.NewItems != null) {
                 foreach (MyStruct item in e.NewItems) {
@@ -356,14 +442,16 @@ namespace WinFinder.Controls {
 
         private void UpdateExtraInfo() {
             try {
-                DirectoryInfo di = new DirectoryInfo(@pwd);
-                if (DriveInfo.GetDrives().Any(d => d.Name == di.Root.FullName)) {
-                    DriveInfo drive = new DriveInfo(di.Root.FullName);
+                string root = Path.GetPathRoot(pwd);
+                if (!string.IsNullOrWhiteSpace(root) && DriveInfo.GetDrives().Any(d => string.Equals(d.Name, root, StringComparison.OrdinalIgnoreCase))) {
+                    DriveInfo drive = new DriveInfo(root);
                     string[] p0 = ByteToValue(drive.TotalSize);
                     string[] p1 = ByteToValue(drive.TotalFreeSpace);
-                    ExtraInfo.Text = $"共 {p0[0]}{p0[1]} 可用 {p1[0]}{p1[1]} ";
+                    string totalText = $"{p0[0]}{p0[1]}";
+                    string freeText = $"{p1[0]}{p1[1]}";
+                    ExtraInfo.Text = LocalizationStrings.DriveUsage(totalText, freeText);
                 }
-                ExtraInfo.Text += $"共 {ListInfo.Count} 项 已选择 {SelectedCount} 项";
+                ExtraInfo.Text += LocalizationStrings.ItemsSummary(ListInfo.Count, SelectedCount);
             } catch (Exception ex) {
                 Debug.WriteLine($"UpdateExtraInfo failed: {ex.Message}");
                 ExtraInfo.Text = "";
@@ -417,11 +505,11 @@ namespace WinFinder.Controls {
         }
 
         public bool NavigateBack() {
-            DirectoryInfo di = new DirectoryInfo(@pwd);
-            if (di.Parent == null) return false;
+            string parent = GetParentPath(pwd);
+            if (string.IsNullOrWhiteSpace(parent)) return false;
 
             once = pwd;
-            Change_ItemSource(di.Parent.FullName);
+            Change_ItemSource(parent);
             return true;
         }
 
@@ -432,58 +520,28 @@ namespace WinFinder.Controls {
         }
 
         private void Change_ItemSource(string str) {
+            _ = Change_ItemSourceAsync(str);
+        }
+
+        private async Task Change_ItemSourceAsync(string str) {
+            str = NormalizeDirectoryPath(str);
+            if (string.IsNullOrWhiteSpace(str)) return;
+
+            long generation;
+            CancellationToken cancellationToken = BeginContentLoad(out generation);
+            ResetThumbnailScheduling();
+
+            IsSearchMode = false;
+            SearchQuery = string.Empty;
+            StopDirectoryWatcher();
             CloseBreadcrumbPopup();
             CloseInlineBreadcrumbPopup();
-            FileStream fs = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\dif.png", FileMode.Open);
-            BitmapImage bm = new BitmapImage();
-            bm.BeginInit();
-            bm.DecodePixelWidth = 210;
-            bm.StreamSource = fs;
-            bm.CacheOption = BitmapCacheOption.OnLoad;
-            bm.EndInit();
-            fs.Dispose();
-            bm.Freeze();
 
-            FileStream ks = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\Macintosh_HD.png", FileMode.Open);
-            BitmapImage km = new BitmapImage();
-            km.BeginInit();
-            km.DecodePixelWidth = 210;
-            km.StreamSource = ks;
-            km.CacheOption = BitmapCacheOption.OnLoad;
-            km.EndInit();
-            ks.Dispose();
+            BitmapImage bm = LoadBitmapFromPackUri("ico/dif.png", 210);
+            BitmapImage km = LoadBitmapFromPackUri("ico/Macintosh_HD.png", 210);
 
-            List<string> pwdPa = new List<string> { };
-            List<string> pwdFu = new List<string> { };
-            string temp = "";
-            for (int i = 0; i < str.Length; i++) {
-                if (str[i] != '\\') {
-                    temp += str[i].ToString();
-                } else {
-                    bool isDriveRoot = temp.Length == 2 && temp[1] == ':' && char.IsLetter(temp[0]);
-                    if (isDriveRoot) {
-                        temp += @"\";
-                        DriveInfo dr = new DriveInfo(@temp);
-                        string[] p0 = ByteToValue(dr.TotalSize);
-                        string[] p1 = ByteToValue(dr.TotalFreeSpace);
-                        ExtraInfo.Text = $"共 {p0[0]}{p0[1]} 可用 {p1[0]}{p1[1]} ";
-                        pwdFu.Add(temp);
-                    } else {
-                        pwdFu.Add(str.Substring(0, i));
-                    }
-                    pwdPa.Add(temp);
-                    temp = "";
-                }
-            }
-            if (temp != "") {
-                bool isDriveRoot = temp.Length == 2 && temp[1] == ':' && char.IsLetter(temp[0]);
-                if (isDriveRoot) {
-                    temp += @"\";
-                }
-                pwdPa.Add(temp);
-                pwdFu.Add(isDriveRoot ? temp : str.Substring(0));
-                temp = "";
-            }
+            List<string> pwdPa = BuildBreadcrumbLabels(str);
+            List<string> pwdFu = BuildBreadcrumbPaths(str);
 
             pwdInfo.Children.Clear();
             for (int i = 0; i < pwdPa.Count; i++) {
@@ -494,11 +552,7 @@ namespace WinFinder.Controls {
                     Margin = new Thickness(5, 0, 2, 0),
                 };
 
-                if (i == 0) {
-                    pwdItemImg.Source = km;
-                } else {
-                    pwdItemImg.Source = bm;
-                }
+                pwdItemImg.Source = i == 0 ? km : bm;
 
                 TextBlock pwdItemText = new TextBlock {
                     Text = pwdPa[i],
@@ -524,22 +578,24 @@ namespace WinFinder.Controls {
                 t.Children.Add(pwdItemImg);
                 t.Children.Add(pwdItemText);
                 t.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
-                double desiredWidth = t.DesiredSize.Width;
                 t.Clip = Geometry.Parse(Window_Corner(heightOfPwdItem, t.DesiredSize.Width, 13, 0.0));
 
-                int widthOfIndex = 16;
                 if (i != 0) {
-                    SvgViewbox s = new SvgViewbox {
-                        MaxWidth = 12,
-                        MaxHeight = 12,
+                    const double arrowIconSize = 12;
+                    const double arrowHorizontalMargin = 5;
+                    double arrowContainerWidth = arrowIconSize + arrowHorizontalMargin * 2;
+                    ThemedSvgIcon s = new ThemedSvgIcon {
+                        Width = arrowIconSize,
+                        Height = arrowIconSize,
                         VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                        Margin = new Thickness(5, 0, 5, 0),
+                        Margin = new Thickness(arrowHorizontalMargin, 0, arrowHorizontalMargin, 0),
                         Source = new Uri("icon/right.svg", UriKind.Relative),
+                        IconBrush = palette.PrimaryText,
                     };
                     Grid s_parent = new Grid {
                         Height = heightOfPwdItem,
-                        Width = widthOfIndex,
-                        Clip = Geometry.Parse(Window_Corner(heightOfPwdItem, widthOfIndex, 5, 0.5)),
+                        Width = arrowContainerWidth,
+                        Clip = Geometry.Parse(Window_Corner(heightOfPwdItem, arrowContainerWidth, 5, 0.5)),
                         Tag = pwdFu[i - 1]
                     };
                     ApplyBreadcrumbHoverStyle(s_parent);
@@ -547,49 +603,377 @@ namespace WinFinder.Controls {
                     s_parent.PreviewMouseLeftButtonDown += PathUnfold;
                     pwdInfo.Children.Add(s_parent);
                 }
+
                 pwdInfo.Children.Add(t);
             }
 
             pwd = str;
-            DirectoryInfo di = new DirectoryInfo(@str);
-            FileInfo[] fics = di.GetFiles();
-            var fic = fics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
-            DirectoryInfo[] dics = di.GetDirectories();
-            var dic = dics.ToList().Where(t => (t.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != (FileAttributes.Hidden | FileAttributes.System)).ToList();
-
-            int nF = fic.Count; int nD = dic.Count;
-
-            ExtraInfo.Text += $"共 {nF + nD} 项 已选择 0 项";
-
-            ListInfo.Clear();
-            itemsNum = 0;
-
-            string preStr = @pwd;
-            if (@pwd == @"C:\" || @pwd == @"D:\" || @pwd == @"E:\") {
-                preStr = pwd.Replace(@"\", @"");
-            }
-
-            for (int i = 0; i < nF; i++) {
-                ListInfo.Add(new MyStruct() { ThumbLoaded = false, X0 = fic[i].Name, X1 = fic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = fic[i].Extension.Replace(".", "").ToUpper(), X3 = ByteToValue(fic[i].Length), X4 = fic[i].Length });
-            }
-            for (int i = 0; i < nD; i++) {
-                ListInfo.Add(new MyStruct() { ThumbLoaded = false, X0 = dic[i].Name, X1 = dic[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"), X2 = "文件夹", X3 = new string[2] { "", "" }, X4 = -1 });
-            }
-
-            itemsNum = nF + nD;
-
-            int slashIndex = (@preStr).LastIndexOf(@"\") + 1;
-            CurrentFolder = (@pwd).Substring(slashIndex);
-
-            if (nF + nD > 0) {
-                offsetScroll = 0;
-                if (timer.IsEnabled) {
-                    timer.Stop();
+            try {
+                var entries = await ExplorerBackend.Default.BrowseAsync(str, cancellationToken: cancellationToken);
+                if (!IsCurrentContentLoad(generation, cancellationToken)) {
+                    return;
                 }
-                timer.Start();
+
+                ApplyDirectoryEntries(str, entries.Where(t => t.IsVisible).ToList(), preserveState: false);
+                StartDirectoryWatcher(str);
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Debug.WriteLine($"Change_ItemSourceAsync failed: {ex.Message}");
+                if (IsCurrentContentLoad(generation, cancellationToken)) {
+                    ApplyDirectoryEntries(str, Array.Empty<ExplorerItem>(), preserveState: false);
+                    StartDirectoryWatcher(str);
+                }
             }
         }
 
+        private void ApplyDirectoryEntries(string path, IReadOnlyList<ExplorerItem> entries, bool preserveState) {
+            entries = entries ?? Array.Empty<ExplorerItem>();
+            ResetThumbnailScheduling();
+
+            Dictionary<string, MyStruct> existingItems = preserveState
+                ? ListInfo.Where(item => !string.IsNullOrWhiteSpace(item.FullPath))
+                    .GroupBy(item => item.FullPath, StringComparer.OrdinalIgnoreCase)
+                    .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase)
+                : new Dictionary<string, MyStruct>(StringComparer.OrdinalIgnoreCase);
+
+            var nextItems = new List<MyStruct>(entries.Count);
+            foreach (var entry in entries) {
+                if (preserveState && existingItems.TryGetValue(entry.FullPath, out MyStruct existing)) {
+                    UpdateItemFromEntry(existing, entry);
+                    nextItems.Add(existing);
+                } else {
+                    nextItems.Add(CreateItemFromEntry(entry));
+                }
+            }
+
+            ClearListInfoItems();
+            itemsNum = 0;
+            foreach (var item in nextItems) {
+                ListInfo.Add(item);
+            }
+
+            itemsNum = nextItems.Count;
+            UpdateSelectionCount();
+            ExtraInfo.Text = BuildDriveUsageText(path) + LocalizationStrings.ItemsSummary(nextItems.Count, SelectedCount);
+            UpdateCurrentFolderName(path);
+            ScheduleVisibleThumbnailLoad(nextItems.Count);
+        }
+
+        private MyStruct CreateItemFromEntry(ExplorerItem entry) {
+            return new MyStruct {
+                ThumbLoaded = false,
+                ThumbLoading = false,
+                FullPath = entry.FullPath,
+                X0 = entry.Name,
+                X1 = entry.Modified?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty,
+                X2 = entry.IsDirectory ? LocalizationStrings.FolderType : entry.Extension,
+                X3 = entry.IsDirectory ? new string[2] { string.Empty, string.Empty } : ByteToValue(entry.SizeBytes ?? 0),
+                X4 = entry.IsDirectory ? -1 : (entry.SizeBytes ?? 0)
+            };
+        }
+
+        private void UpdateItemFromEntry(MyStruct item, ExplorerItem entry) {
+            string modifiedText = entry.Modified?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty;
+            string typeText = entry.IsDirectory ? LocalizationStrings.FolderType : entry.Extension;
+            string[] sizeText = entry.IsDirectory ? new string[2] { string.Empty, string.Empty } : ByteToValue(entry.SizeBytes ?? 0);
+            long sizeValue = entry.IsDirectory ? -1 : (entry.SizeBytes ?? 0);
+            bool thumbnailStale = !string.Equals(item.FullPath, entry.FullPath, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(item.X1, modifiedText, StringComparison.Ordinal)
+                || !string.Equals(item.X2, typeText, StringComparison.Ordinal)
+                || item.X4 != sizeValue;
+
+            item.FullPath = entry.FullPath;
+            item.X0 = entry.Name;
+            item.X1 = modifiedText;
+            item.X2 = typeText;
+            item.X3 = sizeText;
+            item.X4 = sizeValue;
+
+            if (thumbnailStale) {
+                ResetThumbnailState(item);
+            } else if (item.ThumbLoading) {
+                item.ThumbLoading = false;
+                item.ThumbRequestId = 0;
+            }
+        }
+
+        private void UpdateCurrentFolderName(string path) {
+            string normalized = NormalizeDirectoryPath(path);
+            CurrentFolder = Path.GetFileName(normalized.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            if (string.IsNullOrWhiteSpace(CurrentFolder)) {
+                CurrentFolder = normalized;
+            }
+        }
+
+        private void ScheduleVisibleThumbnailLoad(int itemCount) {
+            if (itemCount <= 0) {
+                return;
+            }
+
+            offsetScroll = 0;
+            if (timer.IsEnabled) {
+                timer.Stop();
+            }
+            timer.Start();
+        }
+
+        private void StartDirectoryWatcher(string path) {
+            StopDirectoryWatcher();
+
+            if (IsSearchMode) {
+                return;
+            }
+
+            string normalized = NormalizeDirectoryPath(path);
+            if (string.IsNullOrWhiteSpace(normalized) || !Directory.Exists(normalized)) {
+                return;
+            }
+
+            try {
+                directoryWatcher = new FileSystemWatcher(normalized) {
+                    IncludeSubdirectories = false,
+                    NotifyFilter = NotifyFilters.FileName |
+                                   NotifyFilters.DirectoryName |
+                                   NotifyFilters.LastWrite |
+                                   NotifyFilters.Size |
+                                   NotifyFilters.Attributes |
+                                   NotifyFilters.CreationTime |
+                                   NotifyFilters.Security,
+                    InternalBufferSize = 64 * 1024
+                };
+                directoryWatcher.Created += DirectoryWatcher_Changed;
+                directoryWatcher.Deleted += DirectoryWatcher_Changed;
+                directoryWatcher.Changed += DirectoryWatcher_Changed;
+                directoryWatcher.Renamed += DirectoryWatcher_Changed;
+                directoryWatcher.Error += DirectoryWatcher_Error;
+                watchedDirectory = normalized;
+                directoryWatcher.EnableRaisingEvents = true;
+            } catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is ArgumentException) {
+                Debug.WriteLine($"StartDirectoryWatcher failed: {ex.Message}");
+                StopDirectoryWatcher();
+            }
+        }
+
+        private void StopDirectoryWatcher() {
+            directoryRefreshTimer.Stop();
+            directoryCompensationRefreshTimer.Stop();
+            watchedDirectory = string.Empty;
+
+            if (directoryWatcher == null) {
+                return;
+            }
+
+            try {
+                directoryWatcher.EnableRaisingEvents = false;
+                directoryWatcher.Created -= DirectoryWatcher_Changed;
+                directoryWatcher.Deleted -= DirectoryWatcher_Changed;
+                directoryWatcher.Changed -= DirectoryWatcher_Changed;
+                directoryWatcher.Renamed -= DirectoryWatcher_Changed;
+                directoryWatcher.Error -= DirectoryWatcher_Error;
+                directoryWatcher.Dispose();
+            } catch (Exception ex) when (ex is IOException || ex is ObjectDisposedException) {
+                Debug.WriteLine($"StopDirectoryWatcher failed: {ex.Message}");
+            } finally {
+                directoryWatcher = null;
+            }
+        }
+
+        private void DirectoryWatcher_Changed(object sender, FileSystemEventArgs e) {
+            ScheduleDirectoryRefresh();
+        }
+
+        private void DirectoryWatcher_Error(object sender, ErrorEventArgs e) {
+            Debug.WriteLine($"Directory watcher error: {e.GetException()?.Message}");
+            ScheduleDirectoryRefresh();
+        }
+
+        private void ScheduleDirectoryRefresh() {
+            if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) {
+                return;
+            }
+
+            Dispatcher.BeginInvoke(new Action(() => {
+                if (IsSearchMode || string.IsNullOrWhiteSpace(watchedDirectory)) {
+                    return;
+                }
+
+                if (directoryRefreshTimer.IsEnabled) {
+                    directoryRefreshTimer.Stop();
+                }
+                directoryRefreshTimer.Start();
+
+                if (directoryCompensationRefreshTimer.IsEnabled) {
+                    directoryCompensationRefreshTimer.Stop();
+                }
+                directoryCompensationRefreshTimer.Start();
+            }), DispatcherPriority.Background);
+        }
+
+        private void DirectoryRefreshTimer_Tick(object sender, EventArgs e) {
+            directoryRefreshTimer.Stop();
+            RefreshCurrentDirectoryFromBackend();
+        }
+
+        private void DirectoryCompensationRefreshTimer_Tick(object sender, EventArgs e) {
+            directoryCompensationRefreshTimer.Stop();
+            RefreshCurrentDirectoryFromBackend();
+        }
+
+        private async void RefreshCurrentDirectoryFromBackend() {
+            if (IsSearchMode) {
+                return;
+            }
+
+            string path = watchedDirectory;
+            if (string.IsNullOrWhiteSpace(path)) {
+                path = pwd;
+            }
+
+            path = NormalizeDirectoryPath(path);
+            if (string.IsNullOrWhiteSpace(path)) {
+                return;
+            }
+
+            if (!Directory.Exists(path)) {
+                CancelContentLoad();
+                StopDirectoryWatcher();
+                ResetThumbnailScheduling();
+                ClearListInfoItems();
+                itemsNum = 0;
+                SelectedCount = 0;
+                ExtraInfo.Text = LocalizationStrings.ItemsSummary(0, 0);
+                return;
+            }
+
+            long generation;
+            CancellationToken cancellationToken = BeginContentLoad(out generation);
+            try {
+                var entries = await ExplorerBackend.Default.BrowseAsync(path, cancellationToken: cancellationToken);
+                if (!IsCurrentContentLoad(generation, cancellationToken) || IsSearchMode) {
+                    return;
+                }
+
+                ApplyDirectoryEntries(path, entries.Where(t => t.IsVisible).ToList(), preserveState: true);
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Debug.WriteLine($"RefreshCurrentDirectoryFromBackend failed: {ex.Message}");
+            }
+        }
+
+        private BitmapImage LoadBitmapFromPackUri(string relativePath, int decodeWidth) {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.DecodePixelWidth = decodeWidth;
+            bitmap.UriSource = new Uri($"pack://application:,,,/{relativePath}", UriKind.Absolute);
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+
+        private string GetParentPath(string path) {
+            if (string.IsNullOrWhiteSpace(path)) {
+                return string.Empty;
+            }
+
+            string normalized = path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (normalized.Length == 2 && normalized[1] == ':') {
+                normalized += "\\";
+            }
+
+            string parent = Path.GetDirectoryName(normalized);
+            if (!string.IsNullOrWhiteSpace(parent)) {
+                return parent;
+            }
+
+            string root = Path.GetPathRoot(normalized);
+            return string.IsNullOrWhiteSpace(root) ? string.Empty : root;
+        }
+
+        private List<string> BuildBreadcrumbLabels(string path) {
+            var labels = new List<string>();
+            if (string.IsNullOrWhiteSpace(path)) {
+                return labels;
+            }
+
+            string temp = string.Empty;
+            for (int i = 0; i < path.Length; i++) {
+                if (path[i] != '\\') {
+                    temp += path[i];
+                } else {
+                    labels.Add(temp);
+                    temp = string.Empty;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(temp)) {
+                labels.Add(temp);
+            }
+
+            return labels;
+        }
+
+        private List<string> BuildBreadcrumbPaths(string path) {
+            var paths = new List<string>();
+            if (string.IsNullOrWhiteSpace(path)) {
+                return paths;
+            }
+
+            string normalized = NormalizeDirectoryPath(path);
+            string root = Path.GetPathRoot(normalized);
+            if (string.IsNullOrWhiteSpace(root)) {
+                paths.Add(normalized);
+                return paths;
+            }
+
+            paths.Add(root);
+            string remaining = normalized.Substring(root.Length)
+                .Trim(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (string.IsNullOrEmpty(remaining)) {
+                return paths;
+            }
+
+            string current = root;
+            foreach (string part in remaining.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)) {
+                current = Path.Combine(current, part);
+                paths.Add(current);
+            }
+
+            return paths;
+        }
+        private string BuildDriveUsageText(string path) {
+            try {
+                string root = Path.GetPathRoot(path);
+                if (!string.IsNullOrWhiteSpace(root) && DriveInfo.GetDrives().Any(d => string.Equals(d.Name, root, StringComparison.OrdinalIgnoreCase))) {
+                    DriveInfo drive = new DriveInfo(root);
+                    string[] p0 = ByteToValue(drive.TotalSize);
+                    string[] p1 = ByteToValue(drive.TotalFreeSpace);
+                    string totalText = $"{p0[0]}{p0[1]}";
+                    string freeText = $"{p1[0]}{p1[1]}";
+                    return LocalizationStrings.DriveUsage(totalText, freeText);
+                }
+            } catch (Exception ex) {
+                Debug.WriteLine($"BuildDriveUsageText failed: {ex.Message}");
+            }
+
+            return string.Empty;
+        }
+
+        private string GetItemFullPath(MyStruct item) {
+            if (item == null) {
+                return string.Empty;
+            }
+            if (!string.IsNullOrWhiteSpace(item.FullPath)) {
+                return item.FullPath;
+            }
+            if (Path.IsPathRooted(item.X0)) {
+                return item.X0;
+            }
+            if (string.IsNullOrWhiteSpace(pwd)) {
+                return item.X0;
+            }
+            return Path.Combine(pwd, item.X0);
+        }
         private string[] ByteToValue(long number) {
             string[] sizeSeg = new string[2];
             double last = 1;
@@ -631,35 +1015,20 @@ namespace WinFinder.Controls {
                 }
 
                 Point point = clickObject.TranslatePoint(new Point(), WorkSpace);
-                DirectoryInfo[] subDirs;
-                try {
-                    subDirs = new DirectoryInfo(fu)
-                        .GetDirectories()
-                        .Where(dir => (dir.Attributes & FileAttributes.System) == 0)
-                        .OrderBy(dir => dir.Name, new NaturalStringComparer())
-                        .ToArray();
-                } catch {
-                    return;
-                }
+                var subDirs = ExplorerBackend.Default.Browse(fu)
+                    .Where(dir => dir.IsDirectory && dir.IsVisible)
+                    .ToArray();
 
                 if (subDirs.Length == 0) {
                     return;
                 }
 
-                FileStream fs = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\dif.png", FileMode.Open);
-                BitmapImage bm = new BitmapImage();
-                bm.BeginInit();
-                bm.DecodePixelWidth = 210;
-                bm.StreamSource = fs;
-                bm.CacheOption = BitmapCacheOption.OnLoad;
-                bm.EndInit();
-                fs.Dispose();
-                bm.Freeze();
+                BitmapImage bm = LoadBitmapFromPackUri("ico/dif.png", 210);
 
                 Grid sublist = new Grid {
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Background = palette.PaneBackground
+                    Background = palette.ControlBackground
                 };
 
                 ScrollViewer scrollViewer = new ScrollViewer {
@@ -667,11 +1036,11 @@ namespace WinFinder.Controls {
                     MaxHeight = 198,
                     MaxWidth = 180,
                     Margin = new Thickness(0, 2, 0, 2),
-                    Background = palette.PaneBackground
+                    Background = palette.ControlBackground
                 };
                 StackPanel sublistPanel = new StackPanel {
                     Orientation = Orientation.Vertical,
-                    Background = palette.PaneBackground
+                    Background = palette.ControlBackground
                 };
                 double itemHeight = 33;
 
@@ -683,7 +1052,7 @@ namespace WinFinder.Controls {
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(2, 0, 2, 0),
-                        Tag = dir.FullName,
+                        Tag = dir.FullPath,
                     };
 
                     System.Windows.Controls.Image pwdItemImg = new System.Windows.Controls.Image {
@@ -695,7 +1064,7 @@ namespace WinFinder.Controls {
                     };
 
                     TextBlock pwdItemText = new TextBlock {
-                        Text = dir.ToString(),
+                        Text = dir.Name,
                         FontSize = 15,
                         FontWeight = FontWeights.Regular,
                         FontFamily = new FontFamily("Microsoft YaHei UI"),
@@ -710,7 +1079,7 @@ namespace WinFinder.Controls {
                     };
                     d.Setters.Add(new Setter() { Property = BackgroundProperty, Value = palette.BreadcrumbHoverBackground });
                     Style st = new Style();
-                    st.Setters.Add(new Setter() { Property = BackgroundProperty, Value = palette.PaneBackground });
+                    st.Setters.Add(new Setter() { Property = BackgroundProperty, Value = palette.ControlBackground });
                     st.Triggers.Add(d);
                     sublistItem.Style = st;
                     sublistItem.Children.Add(pwdItemImg);
@@ -721,19 +1090,19 @@ namespace WinFinder.Controls {
 
                 scrollViewer.Content = sublistPanel;
                 System.Windows.Shapes.Path backgroundPath = new System.Windows.Shapes.Path {
-                    //Stroke = palette.DividerBrush,
-                    Stroke = Brushes.White,
+                    Stroke = palette.DividerBrush,
                     StrokeThickness = 1,
+                    IsHitTestVisible = false,
                 };
+                Panel.SetZIndex(backgroundPath, 1);
                 sublist.Children.Add(scrollViewer);
-
+                sublist.Children.Add(backgroundPath);
                 sublist.SizeChanged += (s, _) => {
                     if (sublist.ActualWidth <= 0 || sublist.ActualHeight <= 0) return;
                     sublist.Clip = Geometry.Parse(Window_Corner(sublist.ActualHeight, sublist.ActualWidth, squircle_radius, 0.5));
                     sublist.Margin = new Thickness(point.X, point.Y - sublist.ActualHeight + 1, 0, 0);
                     backgroundPath.Data = Geometry.Parse(Window_Corner(sublist.ActualHeight, sublist.ActualWidth, squircle_radius, 1));
                     backgroundPath.Stroke = palette.DividerBrush;
-                    sublist.Children.Add(backgroundPath);
                     for (int j = 0; j < sublistPanel.Children.Count; j++) {
                         if (sublistPanel.Children[j] is StackPanel p) {
                             p.Clip = Geometry.Parse(Window_Corner(itemHeight, sublist.ActualWidth - 4, squircle_radius - 2, 1));
@@ -746,7 +1115,7 @@ namespace WinFinder.Controls {
             }
         }
 
-        private void BuildBreadcrumbPopup(IEnumerable<DirectoryInfo> subDirs) {
+        private void BuildBreadcrumbPopup(IEnumerable<ExplorerItem> subDirs) {
             if (BreadcrumbPopupPanel == null) {
                 return;
             }
@@ -762,18 +1131,18 @@ namespace WinFinder.Controls {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(2, 2, 2, 0),
-                    Tag = dir.FullName,
+                    Tag = dir.FullPath,
                     Background = Brushes.Transparent
                 };
                 item.SizeChanged += BreadcrumbPopupItem_SizeChanged;
 
-                SvgViewbox icon = new SvgViewbox {
+                ThemedSvgIcon icon = new ThemedSvgIcon {
                     VerticalAlignment = VerticalAlignment.Center,
                     Height = 20,
                     Width = 20,
-                    Stretch = Stretch.Uniform,
                     Margin = new Thickness(6, 0, 6, 0),
                     Source = new Uri("/icon/folder.svg", UriKind.Relative),
+                    IconBrush = palette.PrimaryText,
                 };
 
                 TextBlock label = new TextBlock {
@@ -814,9 +1183,9 @@ namespace WinFinder.Controls {
 
         private void ApplyThemeToBreadcrumbPopup() {
             if (BreadcrumbPopupBorder == null) return;
-            BreadcrumbPopupBorder.Background = palette.PaneBackground;
+            BreadcrumbPopupBorder.Background = palette.ControlBackground;
             BreadcrumbPopupBorder.BorderBrush = palette.DividerBrush;
-            BreadcrumbScrollViewer.Background = palette.PaneBackground;
+            BreadcrumbScrollViewer.Background = palette.ControlBackground;
             if (BreadcrumbPopupBorder.Effect == null) {
                 BreadcrumbPopupBorder.Effect = new DropShadowEffect {
                     Color = Colors.Black,
@@ -859,33 +1228,15 @@ namespace WinFinder.Controls {
             if (e.ClickCount != 2) {
                 return;
             }
-            System.Windows.Controls.ListViewItem temp = sender as System.Windows.Controls.ListViewItem;
-            MyStruct myStruct = temp.DataContext as MyStruct;
-            string str;
-            string strType;
-            if (myStruct != null) {
-                if (pwd == @"C:\" || pwd == @"D:\" || pwd == @"E:\") {
-                    str = $@"{pwd}{myStruct.X0}";
-                } else {
-                    str = $@"{pwd}\{myStruct.X0}";
-                }
-                strType = myStruct.X2;
-            } else {
-                Grid s = sender as Grid;
-                TextBlock t = s.Children[1] as TextBlock;
-                if (pwd == @"C:\" || pwd == @"D:\" || pwd == @"E:\") {
-                    str = $@"{pwd}{t.Text}";
-                } else {
-                    str = $@"{pwd}\{t.Text}";
-                }
-                strType = t.Tag as string;
+
+            MyStruct item = null;
+            if (sender is System.Windows.Controls.ListViewItem temp) {
+                item = temp.DataContext as MyStruct;
+            } else if (sender is Grid grid) {
+                item = grid.DataContext as MyStruct;
             }
 
-            if (strType == "文件夹") {
-                Change_ItemSource(@str);
-            } else {
-                Process.Start(@str);
-            }
+            ActivateItem(item);
         }
 
         private Grid recordGrid = null;
@@ -902,31 +1253,7 @@ namespace WinFinder.Controls {
                 return;
             }
 
-            string str;
-            string strType;
-            if (temp.DataContext is MyStruct myStruct) {
-                if (pwd == @"C:\" || pwd == @"D:\" || pwd == @"E:\") {
-                    str = $@"{pwd}{myStruct.X0}";
-                } else {
-                    str = $@"{pwd}\{myStruct.X0}";
-                }
-                strType = myStruct.X2;
-            } else {
-                Grid s = sender as Grid;
-                TextBlock t = s.Children[1] as TextBlock;
-                if (pwd == @"C:\" || pwd == @"D:\" || pwd == @"E:\") {
-                    str = $@"{pwd}{t.Text}";
-                } else {
-                    str = $@"{pwd}\{t.Text}";
-                }
-                strType = t.Tag as string;
-            }
-
-            if (strType == "文件夹") {
-                Change_ItemSource(@str);
-            } else {
-                Process.Start(@str);
-            }
+            ActivateItem(temp?.DataContext as MyStruct);
         }
     }
 }

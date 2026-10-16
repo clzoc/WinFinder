@@ -28,6 +28,30 @@ namespace WinFinder {
             }
         }
 
+        private bool _thumbLoading;
+        public bool ThumbLoading {
+            get => _thumbLoading;
+            set {
+                if (_thumbLoading != value) {
+                    _thumbLoading = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ThumbLoading)));
+                }
+            }
+        }
+
+        public long ThumbRequestId { get; set; }
+
+        private string _fullPath;
+        public string FullPath {
+            get => _fullPath;
+            set {
+                if (_fullPath != value) {
+                    _fullPath = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullPath)));
+                }
+            }
+        }
+
         private string _x0;
         private string _x1;
         private string _x2;

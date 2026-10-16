@@ -38,11 +38,12 @@ msbuild WinFinder.sln
 
 ## 文档
 - [架构概述](ARCHITECTURE.md)
+- [缩略图架构](THUMBNAIL_ARCHITECTURE.md)
 - [开发指南](CONTRIBUTING.md)
 - 图标系统参考（`/icon` 目录，使用 SVG，已在 XAML 中引用）
 
 ## 开发路线
-- [ ] 自定义缩略图系统
+- [ ] 独立缩略图服务：摆脱系统编解码器、K-Lite Codec Pack 与 HEIC 扩展依赖
 - [ ] 区域选择增强与上下文菜单完善
 
 ---
@@ -77,6 +78,7 @@ cd WinFinder
 msbuild WinFinder.sln
 ```
 > Visual Studio users: build with the x64 Debug/Release configuration.
+> Everything64.dll is vendored under `Native/` and copied to the output folder during build.
 
 ## Usage
 - Top toolbar: back/forward, view toggle, dual-pane layout toggle.
@@ -84,5 +86,5 @@ msbuild WinFinder.sln
 - Breadcrumb: click nodes to jump; click arrows to open subfolder popup.
 
 ## Roadmap
-- [ ] Custom thumbnail pipeline
+- [ ] Standalone thumbnail service that avoids hard dependency on system codecs, K-Lite Codec Pack, and HEIC extensions
 - [ ] Enhanced marquee selection and context menu

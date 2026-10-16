@@ -18,6 +18,9 @@ namespace WinFinder {
         public SolidColorBrush PrimaryText { get; set; }
         public SolidColorBrush SecondaryText { get; set; }
         public SolidColorBrush MutedText { get; set; }
+        public SolidColorBrush ControlBackground { get; set; }
+        public SolidColorBrush ControlHoverBackground { get; set; }
+        public SolidColorBrush ControlActiveBackground { get; set; }
         public SolidColorBrush PaneBackground { get; set; }
         public SolidColorBrush PaneInactiveBackground { get; set; }
         public SolidColorBrush PaneActiveBackground { get; set; }
@@ -26,7 +29,10 @@ namespace WinFinder {
         public SolidColorBrush ListAlternateBackground { get; set; }
         public SolidColorBrush ListHoverBackground { get; set; }
         public SolidColorBrush ListSelectedBackground { get; set; }
+        public SolidColorBrush ListSelectedText { get; set; }
         public SolidColorBrush BreadcrumbHoverBackground { get; set; }
+        public SolidColorBrush SelectionBoxBackground { get; set; }
+        public SolidColorBrush SelectionBoxBorder { get; set; }
         public SolidColorBrush AccentShadow { get; set; }
         public Color AccentColor { get; set; }
     }
@@ -38,55 +44,67 @@ namespace WinFinder {
 
         public static ThemePalette CreateLight() {
             return new ThemePalette {
-                WindowBackground = Brush("#F3F3F3"),
-                TopBarBackground = Brush("#F4F3F2"),
-                DividerBrush = Brush("#22000000"),
-                SidebarBackground = Brush("#EFEFEF"),
-                SidebarHover = Brush("#DDE7F9"),
-                SidebarSelected = Brush("#9ABAE8"),
-                SidebarText = Brush("#111111"),
-                SidebarSelectedText = Brush("#0D1A36"),
-                PrimaryText = Brush("#111111"),
-                SecondaryText = Brush("#303030"),
-                MutedText = Brush("#606060"),
+                WindowBackground = Brush("#F7F7F8"),
+                TopBarBackground = Brush("#FCFCFD"),
+                DividerBrush = Brush("#1A0F172A"),
+                SidebarBackground = Brush("#F1F1F3"),
+                SidebarHover = Brush("#E7E7EA"),
+                SidebarSelected = Brush("#C9DEF8"),
+                SidebarText = Brush("#303137"),
+                SidebarSelectedText = Brush("#1F2025"),
+                PrimaryText = Brush("#111827"),
+                SecondaryText = Brush("#5F6068"),
+                MutedText = Brush("#7C7E87"),
+                ControlBackground = Brush("#FFFFFF"),
+                ControlHoverBackground = Brush("#EEF1F5"),
+                ControlActiveBackground = Brush("#E2EAF7"),
                 PaneBackground = Brush("#FFFFFF"),
                 PaneInactiveBackground = Brush("#FFFFFF"),
-                PaneActiveBackground = Brush("#F3F7FF"),
-                PaneBorder = Brush("#DDDDDD"),
-                PaneActiveBorder = Brush("#2962D9"),
-                ListAlternateBackground = Brush("#F5F5F5"),
-                ListHoverBackground = Brush("#DDE7F9"),
-                ListSelectedBackground = Brush("#2962D9"),
-                BreadcrumbHoverBackground = Brush("#DDE7F9"),
-                AccentShadow = Brush("#2962D9"),
-                AccentColor = (Color)ColorConverter.ConvertFromString("#2962D9")
+                PaneActiveBackground = Brush("#FFFFFF"),
+                PaneBorder = Brush("#DCDCE2"),
+                PaneActiveBorder = Brush("#4F7EEA"),
+                ListAlternateBackground = Brush("#F7F7F8"),
+                ListHoverBackground = Brush("#EFEFF2"),
+                ListSelectedBackground = Brush("#C9DEF8"),
+                ListSelectedText = Brush("#111827"),
+                BreadcrumbHoverBackground = Brush("#ECECF0"),
+                SelectionBoxBackground = Brush("#332563EB"),
+                SelectionBoxBorder = Brush("#4F7EEA"),
+                AccentShadow = Brush("#4F7EEA"),
+                AccentColor = (Color)ColorConverter.ConvertFromString("#4F7EEA")
             };
         }
 
         public static ThemePalette CreateDark() {
             return new ThemePalette {
-                WindowBackground = Brush("#1B1D21"),
-                TopBarBackground = Brush("#22252B"),
-                DividerBrush = Brush("#FF343843"),
-                SidebarBackground = Brush("#1F2228"),
-                SidebarHover = Brush("#2A3140"),
-                SidebarSelected = Brush("#3E6BB5"),
-                SidebarText = Brush("#E6E8EE"),
-                SidebarSelectedText = Brush("#F6F7FB"),
-                PrimaryText = Brush("#F1F3F6"),
-                SecondaryText = Brush("#D5D8E0"),
-                MutedText = Brush("#A0A6B3"),
-                PaneBackground = Brush("#1F2228"),
-                PaneInactiveBackground = Brush("#1F2228"),
-                PaneActiveBackground = Brush("#252C37"),
-                PaneBorder = Brush("#353841"),
-                PaneActiveBorder = Brush("#5E8DF6"),
-                ListAlternateBackground = Brush("#232832"),
-                ListHoverBackground = Brush("#2F3746"),
-                ListSelectedBackground = Brush("#4C7AE0"),
-                BreadcrumbHoverBackground = Brush("#2F3746"),
-                AccentShadow = Brush("#5E8DF6"),
-                AccentColor = (Color)ColorConverter.ConvertFromString("#5E8DF6")
+                WindowBackground = Brush("#0F0F10"),
+                TopBarBackground = Brush("#111318"),
+                DividerBrush = Brush("#26FFFFFF"),
+                SidebarBackground = Brush("#171719"),
+                SidebarHover = Brush("#25262A"),
+                SidebarSelected = Brush("#2A2F3A"),
+                SidebarText = Brush("#D7D7DE"),
+                SidebarSelectedText = Brush("#F4F4F5"),
+                PrimaryText = Brush("#ECEFF4"),
+                SecondaryText = Brush("#B9BAC3"),
+                MutedText = Brush("#8A8C96"),
+                ControlBackground = Brush("#1A1D24"),
+                ControlHoverBackground = Brush("#242832"),
+                ControlActiveBackground = Brush("#2D3A50"),
+                PaneBackground = Brush("#141416"),
+                PaneInactiveBackground = Brush("#141416"),
+                PaneActiveBackground = Brush("#18181B"),
+                PaneBorder = Brush("#2A2B30"),
+                PaneActiveBorder = Brush("#7AA2F7"),
+                ListAlternateBackground = Brush("#17181B"),
+                ListHoverBackground = Brush("#232428"),
+                ListSelectedBackground = Brush("#2F6FEB"),
+                ListSelectedText = Brush("#F8FAFC"),
+                BreadcrumbHoverBackground = Brush("#25262A"),
+                SelectionBoxBackground = Brush("#403B82F6"),
+                SelectionBoxBorder = Brush("#7AA2F7"),
+                AccentShadow = Brush("#7AA2F7"),
+                AccentColor = (Color)ColorConverter.ConvertFromString("#7AA2F7")
             };
         }
     }

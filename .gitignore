@@ -1,0 +1,33 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ist/
+[Pp]ublish/
+
+# Visual Studio user/cache files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet restore output
+[Pp]ackages/
+!packages.config
+
+# ClickOnce and signing scratch artifacts
+*.application
+*.manifest
+*_TemporaryKey.pfx
+
+# Logs and diagnostics
+*.log
+TestResult*/
+[Tt]est[Rr]esults/
+
+# Local temporary workspace
+tmp/
+
+# Bundled FFmpeg tool slot: binaries stay local (too large for GitHub), README documents placement
+Tools/ffmpeg/*.exe
+Tools/ffmpeg/*.dll

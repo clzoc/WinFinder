@@ -4,11 +4,6 @@
              xmlns:local="clr-namespace:WinFinder"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ScrollBar.xaml"/>
-                <ResourceDictionary Source="/ScrollViewer.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <!-- Removed custom ScrollBar/ScrollViewer templates to avoid runtime crashes -->
     </Application.Resources>
 </Application>

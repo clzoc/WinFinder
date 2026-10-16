@@ -12,7 +12,7 @@ namespace WinFinder.Controls {
         private Point selectionStart;
         private Point _selectionEndPoint;
         private bool isSelecting;
-        private Grid selectionArea = new Grid();
+        private Border selectionArea = new Border();
 
         private DispatcherTimer _autoScrollTimer;
         private double _autoScrollSpeed;
@@ -28,8 +28,10 @@ namespace WinFinder.Controls {
                 _selectionEndPoint = selectionStart;
                 isSelecting = true;
 
-                selectionArea = new Grid {
-                    Background = new SolidColorBrush(Color.FromArgb(127, 154, 186, 232)),
+                selectionArea = new Border {
+                    Background = palette.SelectionBoxBackground,
+                    BorderBrush = palette.SelectionBoxBorder,
+                    BorderThickness = new Thickness(1),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                 };

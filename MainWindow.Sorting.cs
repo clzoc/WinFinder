@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using WinFinder.Utilities;
 
 namespace WinFinder {
     public partial class MainWindow {
@@ -29,7 +30,7 @@ namespace WinFinder {
                         dt = clickedColumn.CellTemplate.LoadContent() as TextBlock;
                     }
                     System.Windows.Data.Binding myBinding;
-                    if (bt.Text == "大小") {
+                    if (bt.Text == LocalizationStrings.ColumnSizeHeader) {
                         myBinding = BindingOperations.GetBinding(dt, TagProperty);
                     } else {
                         myBinding = BindingOperations.GetBinding(dt, TextBlock.TextProperty);
@@ -102,7 +103,7 @@ namespace WinFinder {
                         item.BringIntoView();
                     }
                 } catch (Exception ex) {
-                    Debug.WriteLine($"滚动到选中项错误: {ex.Message}");
+                    Debug.WriteLine($"{LocalizationStrings.ScrollSelectionError}: {ex.Message}");
                 }
             } else {
                 ScrollViewer scrollViewer = FindVisualChild<ScrollViewer>(listView);

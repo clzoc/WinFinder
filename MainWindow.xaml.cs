@@ -9,15 +9,15 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Effects;
-using SharpVectors.Converters;
 using WinFinder.Controls;
+using WinFinder.Utilities;
 
-namespace WinFinder {
+namespace WinFinder {    
     public partial class MainWindow : Window, INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool paneStacked = false;
+        private bool isDualPaneEnabled = false;
         private WorkspacePane activePane;
         private int isZoom = 0;
         private readonly string[] zoomIcons = { "/icon/Maximize_Button_Hover_M.svg", "/icon/Maximize_Button_Hover_Zoom_M.svg" };
@@ -39,7 +39,7 @@ namespace WinFinder {
         private class SidebarVisual {
             public string Path { get; set; }
             public Border Container { get; set; }
-            public SvgViewbox Icon { get; set; }
+            public ThemedSvgIcon Icon { get; set; }
             public TextBlock Label { get; set; }
         }
 
@@ -110,7 +110,6 @@ namespace WinFinder {
             activePane = pane;
             activePane.PropertyChanged += ActivePane_PropertyChanged;
             UpdateCurrentFolder();
-            UpdateActivePaneVisual();
         }
 
         private void ActivePane_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -122,7 +121,13 @@ namespace WinFinder {
         private void UpdateCurrentFolder() {
             if (activePane != null) {
                 var path = activePane.CurrentPath;
-                var name = Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar));
+                if (string.IsNullOrWhiteSpace(path)) {
+                    CurrentFolder = string.Empty;
+                    HighlightSidebarSelection(string.Empty);
+                    return;
+                }
+
+                var name = Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
                 if (string.IsNullOrWhiteSpace(name)) {
                     name = path;
                 }
@@ -162,8 +167,14 @@ namespace WinFinder {
             TogglePaneLayout.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             TogglePaneLayout.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 0.0));
 
+            ToggleDualPane.Height = 35;
+            ToggleDualPane.Width = 35;
+            ToggleDualPane.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            ToggleDualPane.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            ToggleDualPane.Clip = Geometry.Parse(Window_Corner(35, 35, 10, 0.0));
+
             double modeButtonHeight = 30;
-            double modeButtonWidth = (SideBar.ActualWidth > 0 ? (SideBar.ActualWidth - 16 - 12) / 3 : 60);
+            double modeButtonWidth = (LeftSideOutside.ActualWidth > 0 ? (LeftSideOutside.ActualWidth - 12) / 3 : 60);
             var modeClip = Geometry.Parse(Window_Corner(modeButtonHeight, modeButtonWidth, modeButtonHeight * 0.40, 0.0));
             ModeAutoButton.Height = modeButtonHeight;
             ModeAutoButton.Width = modeButtonWidth;
@@ -175,7 +186,7 @@ namespace WinFinder {
             ModeLightButton.Clip = modeClip;
             ModeDarkButton.Clip = modeClip;
 
-            SideClipInfo = Window_Corner(SidebarItemHeight, SideBar.ActualWidth > 0 ? SideBar.ActualWidth - 8 : 200, SidebarItemHeight * 0.40, 0.5);
+            SideClipInfo = Window_Corner(SidebarItemHeight, SideBar.ActualWidth > 0 ? SideBar.ActualWidth : 200, SidebarItemHeight * 0.40, 0.5);
 
             var entries = BuildSidebarEntries().ToList();
             SideBar.Children.Clear();
@@ -187,24 +198,24 @@ namespace WinFinder {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     Background = Brushes.Transparent,
                     CornerRadius = new CornerRadius(SidebarItemHeight * 0.35),
-                    Padding = new Thickness(10, 6, 12, 6),
-                    Margin = new Thickness(4, 4, 4, 0),
+                    Padding = new Thickness(10, 6, 10, 6),
+                    Margin = new Thickness(0, 4, 0, 0),
                     Tag = entry.Path
                 };
                 BindingOperations.SetBinding(container, ClipProperty, new Binding("Data") { Source = SideClip });
 
                 var row = new Grid { Margin = new Thickness(2, 0, 2, 0) };
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(50) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var icon = new SvgViewbox {
+                var icon = new ThemedSvgIcon {
                     Width = 24,
                     Height = 24,
                     Source = new Uri(entry.Icon, UriKind.Relative),
-                    Stretch = Stretch.Uniform,
+                    IconBrush = palette.SidebarText,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                    Margin = new Thickness(10, 0, 0, 0),
+                    Margin = new Thickness(5, 0, 0, 0),
                 };
                 Grid.SetColumn(icon, 0);
 
@@ -214,7 +225,7 @@ namespace WinFinder {
                     FontFamily = new FontFamily("Microsoft YaHei UI"),
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                    Foreground = palette.SidebarText,                    
+                    Foreground = palette.SidebarText,
                     TextTrimming = TextTrimming.CharacterEllipsis,
                     Margin = new Thickness(5, 0, 0, 0),
                 };
@@ -248,12 +259,12 @@ namespace WinFinder {
                 items.Add(new SidebarEntry { Path = userProfile, Label = Environment.UserName, Icon = "/icon/house.svg" });
             }
 
-            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "桌面", "/icon/laptopcomputer.svg");
-            AddIfExists(items, Path.Combine(userProfile, "Downloads"), "下载", "/icon/icloud.and.arrow.down.svg");
-            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "音乐", "/icon/headphones.svg");
-            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "图片", "/icon/camera.svg");
-            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "视频", "/icon/film.svg");
-            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "文稿", "/icon/doc.text.svg");
+            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.Desktop), LocalizationStrings.Desktop, "/icon/pc.svg");
+            AddIfExists(items, Path.Combine(userProfile, "Downloads"), LocalizationStrings.Downloads, "/icon/icloud.and.arrow.down.svg");
+            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), LocalizationStrings.Music, "/icon/headphones.svg");
+            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), LocalizationStrings.Pictures, "/icon/camera.svg");
+            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), LocalizationStrings.Videos, "/icon/film.svg");
+            AddIfExists(items, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), LocalizationStrings.Documents, "/icon/doc.text.svg");
 
             var drives = DriveInfo.GetDrives()
                 .Where(drive => drive.DriveType == DriveType.Fixed)
@@ -261,7 +272,7 @@ namespace WinFinder {
 
             foreach (var drive in drives) {
                 if (!drive.IsReady) continue;
-                var label = $"盘({drive.Name.TrimEnd(Path.DirectorySeparatorChar)})";
+                var label = LocalizationStrings.DriveLabel(drive.Name.TrimEnd(Path.DirectorySeparatorChar));
                 items.Add(new SidebarEntry {
                     Path = drive.RootDirectory.FullName,
                     Label = label,
@@ -311,8 +322,10 @@ namespace WinFinder {
 
             foreach (var visual in sidebarVisuals) {
                 bool isMatch = IsSidebarSelected(visual.Path);
+                Brush foreground = isMatch ? palette.SidebarSelectedText : palette.SidebarText;
                 visual.Container.Background = isMatch ? palette.SidebarSelected : Brushes.Transparent;
-                visual.Label.Foreground = isMatch ? palette.SidebarSelectedText : palette.SidebarText;
+                visual.Label.Foreground = foreground;
+                visual.Icon.IconBrush = foreground;
             }
         }
 
@@ -328,6 +341,7 @@ namespace WinFinder {
             var visual = sidebarVisuals.FirstOrDefault(v => v.Container == container);
             if (visual != null) {
                 visual.Label.Foreground = brush;
+                visual.Icon.IconBrush = brush;
             }
         }
 
@@ -337,7 +351,7 @@ namespace WinFinder {
 
         private void UpdateWindowClips() {
             Info = Window_Corner(ActualHeight, ActualWidth, 15, 1);
-            SideClipInfo = Window_Corner(SidebarItemHeight, SideBar.ActualWidth > 0 ? SideBar.ActualWidth - 8 : 200, SidebarItemHeight * 0.40, 0.5);
+            SideClipInfo = Window_Corner(SidebarItemHeight, SideBar.ActualWidth > 0 ? SideBar.ActualWidth : 200, SidebarItemHeight * 0.40, 0.5);
         }
 
         private void ApplySystemTheme() {
@@ -372,8 +386,10 @@ namespace WinFinder {
             Resources["TopBarBackgroundBrush"] = palette.TopBarBackground;
             Resources["DividerBrush"] = palette.DividerBrush;
             Resources["SidebarBackgroundBrush"] = palette.SidebarBackground;
-            Resources["ControlBackgroundBrush"] = palette.PaneInactiveBackground;
-            Resources["ControlHoverBrush"] = palette.ListHoverBackground;
+            Resources["SidebarHoverBrush"] = palette.SidebarHover;
+            Resources["ControlBackgroundBrush"] = palette.ControlBackground;
+            Resources["ControlHoverBrush"] = palette.ControlHoverBackground;
+            Resources["IconBrush"] = palette.PrimaryText;
 
             LayoutRootParent.Background = palette.WindowBackground;
             LayoutNodeTop.Background = palette.TopBarBackground;
@@ -390,6 +406,7 @@ namespace WinFinder {
             ApplySidebarPalette();
             ApplyPanePalette();
             UpdateModeButtonsAppearance();
+            UpdatePaneLayoutButtonStates();
         }
 
         private void ApplySidebarPalette() {
@@ -398,7 +415,9 @@ namespace WinFinder {
                 sidebarTitle.Foreground = palette.MutedText;
             }
             foreach (var visual in sidebarVisuals) {
-                visual.Label.Foreground = IsSidebarSelected(visual.Path) ? palette.SidebarSelectedText : palette.SidebarText;
+                Brush foreground = IsSidebarSelected(visual.Path) ? palette.SidebarSelectedText : palette.SidebarText;
+                visual.Label.Foreground = foreground;
+                visual.Icon.IconBrush = foreground;
             }
             HighlightSidebarSelection(selectedSidebarPath);
         }
@@ -410,7 +429,12 @@ namespace WinFinder {
             if (Pane2 != null) {
                 Pane2.ApplyTheme(palette);
             }
-            UpdateActivePaneVisual();
+            if (Pane1Host != null) {
+                Pane1Host.Background = palette.PaneBackground;
+            }
+            if (Pane2Host != null) {
+                Pane2Host.Background = palette.PaneBackground;
+            }
         }
 
         private void TogglePaneLayout_Click(object sender, RoutedEventArgs e) {
@@ -418,14 +442,37 @@ namespace WinFinder {
             ApplyPaneLayout();
         }
 
+        private void ToggleDualPane_Click(object sender, RoutedEventArgs e) {
+            isDualPaneEnabled = !isDualPaneEnabled;
+            ApplyPaneLayout();
+        }
+
         private void ApplyPaneLayout() {
             if (PaneContainer == null || Pane1Host == null || Pane2Host == null) return;
 
-            if (paneStacked) {
-                PaneContainer.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            Pane1Host.Visibility = Visibility.Visible;
+            PaneContainer.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+
+            if (!isDualPaneEnabled) {
+                PaneContainer.RowDefinitions[1].Height = new GridLength(0);
+                PaneContainer.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                PaneContainer.ColumnDefinitions[1].Width = new GridLength(0);
+
+                Grid.SetRow(Pane1Host, 0);
+                Grid.SetColumn(Pane1Host, 0);
+                Grid.SetColumnSpan(Pane1Host, 2);
+                Grid.SetRow(Pane2Host, 0);
+                Grid.SetColumn(Pane2Host, 1);
+                Grid.SetColumnSpan(Pane2Host, 1);
+
+                Pane2Host.Visibility = Visibility.Collapsed;
+                if (activePane == Pane2) {
+                    SetActivePane(Pane1);
+                }
+            } else if (paneStacked) {
                 PaneContainer.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
                 PaneContainer.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                PaneContainer.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                PaneContainer.ColumnDefinitions[1].Width = new GridLength(0);
 
                 Grid.SetRow(Pane1Host, 0);
                 Grid.SetColumn(Pane1Host, 0);
@@ -433,8 +480,8 @@ namespace WinFinder {
                 Grid.SetRow(Pane2Host, 1);
                 Grid.SetColumn(Pane2Host, 0);
                 Grid.SetColumnSpan(Pane2Host, 2);
+                Pane2Host.Visibility = Visibility.Visible;
             } else {
-                PaneContainer.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
                 PaneContainer.RowDefinitions[1].Height = new GridLength(0);
                 PaneContainer.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
                 PaneContainer.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
@@ -445,14 +492,55 @@ namespace WinFinder {
                 Grid.SetRow(Pane2Host, 0);
                 Grid.SetColumn(Pane2Host, 1);
                 Grid.SetColumnSpan(Pane2Host, 1);
+                Pane2Host.Visibility = Visibility.Visible;
             }
 
+            UpdatePaneDivider();
+            UpdatePaneLayoutButtonStates();
             PaneContainer.InvalidateMeasure();
             PaneContainer.UpdateLayout();
         }
 
+        private void UpdatePaneDivider() {
+            if (PaneDivider == null) return;
+
+            PaneDivider.Visibility = isDualPaneEnabled ? Visibility.Visible : Visibility.Collapsed;
+            if (paneStacked) {
+                PaneDivider.HorizontalAlignment = HorizontalAlignment.Stretch;
+                PaneDivider.VerticalAlignment = VerticalAlignment.Center;
+                PaneDivider.Height = 1;
+                PaneDivider.Width = double.NaN;
+            } else {
+                PaneDivider.HorizontalAlignment = HorizontalAlignment.Center;
+                PaneDivider.VerticalAlignment = VerticalAlignment.Stretch;
+                PaneDivider.Width = 1;
+                PaneDivider.Height = double.NaN;
+            }
+        }
+
+        private void UpdatePaneLayoutButtonStates() {
+            if (TogglePaneLayout != null) {
+                TogglePaneLayout.IsEnabled = isDualPaneEnabled;
+                TogglePaneLayout.Opacity = isDualPaneEnabled ? 1.0 : 0.35;
+                TogglePaneLayout.Background = palette.ControlBackground;
+            }
+
+            if (ToggleDualPane != null) {
+                ToggleDualPane.Opacity = 1.0;
+                ToggleDualPane.Background = isDualPaneEnabled ? palette.ControlActiveBackground : palette.ControlBackground;
+            }
+        }
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            DragMove();
+            if (e.LeftButton != MouseButtonState.Pressed) {
+                return;
+            }
+
+            try {
+                DragMove();
+            } catch (InvalidOperationException) {
+                // DragMove can throw if WPF no longer considers this a valid left-button drag.
+            }
         }
 
         private void Window_Close(object sender, RoutedEventArgs e) {
@@ -485,7 +573,9 @@ namespace WinFinder {
         private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e) {
             if (!useSystemTheme) return;
             if (e.Category == UserPreferenceCategory.General || e.Category == UserPreferenceCategory.Color || e.Category == UserPreferenceCategory.VisualStyle) {
-                Dispatcher.Invoke(ApplySystemTheme);
+                if (!Dispatcher.HasShutdownStarted && !Dispatcher.HasShutdownFinished) {
+                    Dispatcher.BeginInvoke(new Action(ApplySystemTheme));
+                }
             }
         }
 
@@ -508,23 +598,6 @@ namespace WinFinder {
         private void ViewGridView_Click(object sender, RoutedEventArgs e) {
             activePane?.ShowGridView();
         }
-
-        private void UpdateActivePaneVisual() {
-            if (Pane1Host == null || Pane2Host == null || palette == null || activePane == null) return;
-            var activeHost = activePane == Pane1 ? Pane1Host : Pane2Host;
-            var inactiveHost = activePane == Pane1 ? Pane2Host : Pane1Host;
-
-            activeHost.BorderBrush = palette.PaneActiveBorder;
-            activeHost.BorderThickness = new Thickness(1);
-            activeHost.Background = palette.PaneActiveBackground;
-            activeHost.Effect = null;
-
-            inactiveHost.BorderBrush = palette.PaneBorder;
-            inactiveHost.BorderThickness = new Thickness(1);
-            inactiveHost.Background = palette.PaneInactiveBackground;
-            inactiveHost.Effect = null;
-        }
-
         private void UpdateModeButtonsAppearance() {
             if (ModeAutoButton == null || ModeLightButton == null || ModeDarkButton == null || palette == null) return;
 
@@ -609,3 +682,6 @@ namespace WinFinder {
         }
     }
 }
+
+
+

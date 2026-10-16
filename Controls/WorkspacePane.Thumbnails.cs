@@ -1,235 +1,199 @@
-using Microsoft.WindowsAPICodePack.Shell;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using WinFinder.Backend;
+using WinFinder.Utilities;
 
 namespace WinFinder.Controls {
     public partial class WorkspacePane {
         private int itemsNum = 0;
         public double offsetScroll = 0;
+        private long thumbnailRequestGeneration;
+        private long thumbnailRequestId;
+        private readonly object thumbnailCancellationSync = new object();
+        private readonly SemaphoreSlim thumbnailConcurrency = new SemaphoreSlim(4, 4);
+        private CancellationTokenSource thumbnailCancellation = new CancellationTokenSource();
 
         private void Timer_Tick(object sender, EventArgs e) {
-            (sender as DispatcherTimer).Stop();
+            (sender as DispatcherTimer)?.Stop();
 
-            ItemCollection ViewSeq;
+            long generation = Interlocked.Read(ref thumbnailRequestGeneration);
+            CancellationToken cancellationToken = GetThumbnailCancellationToken();
+            if (cancellationToken.IsCancellationRequested) {
+                return;
+            }
+
+            ItemCollection viewItems;
             int rowIndex = (int)Math.Floor(offsetScroll / 30);
-            if (GridViewContainer.IsVisible == true) {
+            if (GridViewContainer.IsVisible) {
                 int rowIndexGrid = (int)Math.Floor(offsetScroll / gridHeight);
-                if (isZoom == 0) {
-                    rowIndex = rowIndexGrid * 8;
-                } else {
-                    rowIndex = rowIndexGrid * 17;
-                }
-                ViewSeq = GridViewContainer.Items;
+                rowIndex = rowIndexGrid * (isZoom == 0 ? 8 : 17);
+                viewItems = GridViewContainer.Items;
             } else {
-                ViewSeq = FILEINFOMATION.Items;
+                viewItems = FILEINFOMATION.Items;
             }
 
-            string preStr = @pwd;
-            if (@pwd == @"C:\" || @pwd == @"D:\" || @pwd == @"E:\") {
-                preStr = pwd.Replace(@"\", @"");
-            }
+            var workItems = new List<ThumbnailWorkItem>();
+            int itemCount = viewItems.Count;
+            for (int i = 0; i < 136; i++) {
+                int localIndex = i + rowIndex;
+                if (localIndex < 0 || localIndex >= itemCount) {
+                    continue;
+                }
 
-            FileStream fs = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\dif.png", FileMode.Open);
-            BitmapImage bm = new BitmapImage();
-            bm.BeginInit();
-            bm.DecodePixelWidth = 210;
-            bm.StreamSource = fs;
-            bm.CacheOption = BitmapCacheOption.OnLoad;
-            bm.EndInit();
-            fs.Dispose();
-            bm.Freeze();
+                if (!(viewItems[localIndex] is MyStruct item) || item.ThumbLoaded || item.ThumbLoading) {
+                    continue;
+                }
 
-            FileStream ks = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\open-7z-file.png", FileMode.Open);
-            BitmapImage km = new BitmapImage();
-            km.BeginInit();
-            km.DecodePixelWidth = 210;
-            km.StreamSource = ks;
-            km.CacheOption = BitmapCacheOption.OnLoad;
-            km.EndInit();
-            ks.Dispose();
-            km.Freeze();
+                bool isDirectory = string.Equals(item.X2, LocalizationStrings.FolderType, StringComparison.OrdinalIgnoreCase);
+                if (item.S0 == null) {
+                    item.S0 = PlaceholderIconFactory.GetPlaceholder(item.X2, isDirectory);
+                }
 
-            FileStream ts = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\binary.png", FileMode.Open);
-            BitmapImage tm = new BitmapImage();
-            tm.BeginInit();
-            tm.DecodePixelWidth = 210;
-            tm.StreamSource = ts;
-            tm.CacheOption = BitmapCacheOption.OnLoad;
-            tm.EndInit();
-            ts.Dispose();
-            tm.Freeze();
+                string fullPath = GetItemFullPath(item);
+                if (string.IsNullOrWhiteSpace(fullPath)) {
+                    item.ThumbLoaded = true;
+                    continue;
+                }
 
-            FileStream xs = new FileStream(@"E:\Repo\wpf\WpfApp2\ico\ini.png", FileMode.Open);
-            BitmapImage xm = new BitmapImage();
-            xm.BeginInit();
-            xm.DecodePixelWidth = 100;
-            xm.StreamSource = xs;
-            xm.CacheOption = BitmapCacheOption.OnLoad;
-            xm.EndInit();
-            xs.Dispose();
-            xm.Freeze();
+                long requestId = Interlocked.Increment(ref thumbnailRequestId);
+                item.ThumbLoading = true;
+                item.ThumbRequestId = requestId;
 
-            Task.Run(() => {
-                string pathvar = Environment.GetEnvironmentVariable("PATH");
-                Environment.SetEnvironmentVariable("PATH", pathvar + @";");
-                MemoryStream ms = new MemoryStream();
-
-                ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = 4;
-                Parallel.For(0, 136, parallelOptions, i => {
-                    try {
-                        int localIndex = i + rowIndex;
-                        if (localIndex >= 0 && localIndex < itemsNum) {
-                            if ((ViewSeq[localIndex] as MyStruct).ThumbLoaded == false) {
-                                (ViewSeq[localIndex] as MyStruct).ThumbLoaded = true;
-                                string fko = @preStr + @"\" + (ViewSeq[localIndex] as MyStruct).X0;
-                                string fmo = $"\"{fko}\"";
-                                if ((ViewSeq[localIndex] as MyStruct).X2 == "文件夹") {
-                                    Dispatcher.InvokeAsync(new Action(delegate {
-                                        (ViewSeq[localIndex] as MyStruct).S0 = bm;
-                                    }));
-                                } else {
-                                    string tko = $@"C:\Users\tsunami\AppData\Local\WinFinder\PreviewThumbnail\{(ViewSeq[localIndex] as MyStruct).X0}.png";
-                                    string tmo = $"\"{tko}\"";
-                                    string fname = (ViewSeq[localIndex] as MyStruct).X0;
-                                    string format = (ViewSeq[localIndex] as MyStruct).X2;
-                                    string[] textFormatSets = { "BAT", "H", "LICENSE", "README", "TXT", "XML", "XAML", "LOG", "CUB", "CSS", "CSV", "IPYNB", "GBS", "PDB", "PY", "CPP", "HTML", "C", "AHK", "MD", "YAML", "JSON", "JS", "TS" };
-                                    if ((fname[0] == '.' && fname.Substring(1).ToUpper() == format) || textFormatSets.Contains(format) == true) {
-                                        if (!File.Exists(tko)) {
-                                            try {
-                                                ProcessStartInfo sa = new ProcessStartInfo {
-                                                    FileName = "pwsh",
-                                                    Arguments = $"-Command get-content -path '\"{fko}\"' -TotalCount 60 | magick -size 450x600 -background white -fill black -font \"\"\"Microsoft-YaHei-&-Microsoft-YaHei-UI\"\"\" -pointsize 18 label:@- -bordercolor white -border 20 '\"{tko}\"'",
-                                                    CreateNoWindow = true,
-                                                    UseShellExecute = false,
-                                                };
-                                                Process oc = new Process {
-                                                    StartInfo = sa,
-                                                };
-                                                oc.Start();
-                                                oc.WaitForExit();
-                                                oc.Close();
-                                            } catch (InvalidOperationException ew) {
-                                                Trace.WriteLine($"{fko} {ew.Source} {ew.StackTrace} {ew.InnerException} {ew.Message}");
-                                            }
-                                        }
-                                        try {
-                                            using (FileStream gs = new FileStream(tko, FileMode.Open)) {
-                                                BitmapImage gm = new BitmapImage();
-                                                gm.BeginInit();
-                                                gm.DecodePixelWidth = 210;
-                                                gm.StreamSource = gs;
-                                                gm.CacheOption = BitmapCacheOption.OnLoad;
-                                                gm.EndInit();
-                                                gs.Dispose();
-                                                gm.Freeze();
-                                                Dispatcher.InvokeAsync(new Action(delegate {
-                                                    (ViewSeq[localIndex] as MyStruct).S0 = gm;
-                                                }));
-                                            }
-                                        } catch (IOException ex) {
-                                            Trace.WriteLine($"{fko} {ex.Message}");
-                                        }
-                                    } else {
-                                        if (format == "PDF") {
-                                            if (!File.Exists(tko)) {
-                                                Trace.WriteLine("This branch is executed");
-                                                Process oc = new Process();
-                                                oc.StartInfo.CreateNoWindow = true;
-                                                oc.StartInfo.UseShellExecute = false;
-                                                oc.StartInfo.FileName = "pwsh";
-                                                oc.StartInfo.Arguments = $"-Command magick -density 50 '\"{fko}\"[0]' -background white -alpha remove '\"{tko}\"'";
-                                                oc.Start();
-                                                oc.WaitForExit();
-                                                oc.Close();
-                                            }
-                                            try {
-                                                using (FileStream gs = new FileStream(tko, FileMode.Open)) {
-                                                    BitmapImage gm = new BitmapImage();
-                                                    gm.BeginInit();
-                                                    gm.DecodePixelWidth = 210;
-                                                    gm.StreamSource = gs;
-                                                    gm.CacheOption = BitmapCacheOption.OnLoad;
-                                                    gm.EndInit();
-                                                    gs.Dispose();
-                                                    gm.Freeze();
-                                                    Dispatcher.InvokeAsync(new Action(delegate {
-                                                        (ViewSeq[localIndex] as MyStruct).S0 = gm;
-                                                    }));
-                                                }
-                                            } catch (IOException ex) {
-                                                Trace.WriteLine($"{fko} {ex.Message}");
-                                            }
-                                        } else if (format == "SVG") {
-                                            if (!File.Exists(tko)) {
-                                                Process oc = new Process();
-                                                oc.StartInfo.CreateNoWindow = true;
-                                                oc.StartInfo.UseShellExecute = false;
-                                                oc.StartInfo.FileName = "pwsh";
-                                                oc.StartInfo.Arguments = $"-Command inkscape '\"{fko}\"' --export-type=png --export-area-drawing --export-background=white --export-filename='\"{tko}\"'";
-                                                oc.Start();
-                                                oc.WaitForExit();
-                                                oc.Close();
-                                            }
-                                            try {
-                                                using (FileStream gs = new FileStream(tko, FileMode.Open)) {
-                                                    BitmapImage gm = new BitmapImage();
-                                                    gm.BeginInit();
-                                                    gm.DecodePixelWidth = 210;
-                                                    gm.StreamSource = gs;
-                                                    gm.CacheOption = BitmapCacheOption.OnLoad;
-                                                    gm.EndInit();
-                                                    gs.Dispose();
-                                                    gm.Freeze();
-                                                    Dispatcher.InvokeAsync(new Action(delegate {
-                                                        (ViewSeq[localIndex] as MyStruct).S0 = gm;
-                                                    }));
-                                                }
-                                            } catch (IOException ex) {
-                                                Trace.WriteLine($"{fko} {ex.Message}");
-                                            }
-                                        } else if (format == "DOCX" || format == "XLSX" || format == "PPTX") {
-
-                                        } else if (format == "ZIP" || format == "7Z") {
-                                            Dispatcher.InvokeAsync(new Action(delegate {
-                                                (ViewSeq[localIndex] as MyStruct).S0 = km;
-                                            }));
-                                        } else if (format == "INI" || format == "TBL") {
-                                            Dispatcher.InvokeAsync(new Action(delegate {
-                                                (ViewSeq[localIndex] as MyStruct).S0 = xm;
-                                            }));
-                                        } else if (format == "DLL" || format == "BIN" || format == "DAT" || format == "BBL" || format == "PFS") {
-                                            Dispatcher.InvokeAsync(new Action(delegate {
-                                                (ViewSeq[localIndex] as MyStruct).S0 = tm;
-                                            }));
-                                        } else {
-                                            try {
-                                                ShellObject shellUnit = ShellObject.FromParsingName(@fko);
-                                                BitmapSource imp = shellUnit.Thumbnail.LargeBitmapSource;
-                                                shellUnit.Dispose();
-                                                imp.Freeze();
-                                                Dispatcher.InvokeAsync(new Action(delegate {
-                                                    (ViewSeq[localIndex] as MyStruct).S0 = imp;
-                                                }));
-                                            } catch (ShellException es) {
-                                                Trace.WriteLine($"{(ViewSeq[localIndex] as MyStruct).X0} {@fko} {es.TargetSite} {es.Data.Count} {es.HelpLink}");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } catch (AggregateException ea) {
-                        Trace.WriteLine($"{ListInfo[i].X0} {ea.Message}");
-                    }
+                workItems.Add(new ThumbnailWorkItem {
+                    Item = item,
+                    FullPath = fullPath,
+                    Name = item.X0 ?? string.Empty,
+                    Format = item.X2 ?? string.Empty,
+                    IsDirectory = isDirectory,
+                    RequestId = requestId,
+                    Generation = generation,
+                    CancellationToken = cancellationToken
                 });
-            });
+            }
+
+            if (workItems.Count == 0) {
+                return;
+            }
+
+            foreach (var workItem in workItems) {
+                _ = RunThumbnailWorkItemAsync(workItem);
+            }
+        }
+
+        private sealed class ThumbnailWorkItem {
+            public MyStruct Item { get; set; }
+            public string FullPath { get; set; }
+            public string Name { get; set; }
+            public string Format { get; set; }
+            public bool IsDirectory { get; set; }
+            public long RequestId { get; set; }
+            public long Generation { get; set; }
+            public CancellationToken CancellationToken { get; set; }
+        }
+
+        private async Task RunThumbnailWorkItemAsync(ThumbnailWorkItem workItem) {
+            try {
+                await thumbnailConcurrency.WaitAsync(workItem.CancellationToken);
+                try {
+                    LoadThumbnail(workItem);
+                } finally {
+                    thumbnailConcurrency.Release();
+                }
+            } catch (OperationCanceledException) {
+                SetThumbnail(workItem, ThumbnailResult.Pending(diagnostic: "Thumbnail request was cancelled."));
+            } catch (Exception ex) {
+                Trace.WriteLine($"{workItem?.FullPath} {ex.Message}");
+                SetThumbnail(workItem, ThumbnailResult.Error(diagnostic: ex.Message));
+            }
+        }
+
+        private void LoadThumbnail(ThumbnailWorkItem workItem) {
+            if (workItem == null || workItem.Item == null) {
+                return;
+            }
+
+            if (workItem.CancellationToken.IsCancellationRequested) {
+                SetThumbnail(workItem, ThumbnailResult.Pending(diagnostic: "Thumbnail request was cancelled."));
+                return;
+            }
+
+            ThumbnailResult result = ExplorerBackend.Default.GetThumbnailResult(new ThumbnailRequest(
+                workItem.FullPath,
+                workItem.Name,
+                workItem.Format,
+                workItem.IsDirectory,
+                210,
+                ThumbnailPriority.Visible,
+                4000,
+                workItem.CancellationToken));
+
+            SetThumbnail(workItem, result);
+        }
+
+        private void SetThumbnail(ThumbnailWorkItem workItem, ThumbnailResult result) {
+            if (workItem == null || workItem.Item == null || result == null || Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) {
+                return;
+            }
+
+            Dispatcher.InvokeAsync(new Action(() => {
+                MyStruct item = workItem.Item;
+                bool staleRequest = workItem.Generation != Interlocked.Read(ref thumbnailRequestGeneration)
+                    || workItem.CancellationToken.IsCancellationRequested
+                    || item.ThumbRequestId != workItem.RequestId
+                    || !string.Equals(GetItemFullPath(item), workItem.FullPath, StringComparison.OrdinalIgnoreCase);
+
+                if (staleRequest) {
+                    if (item.ThumbRequestId == workItem.RequestId) {
+                        item.ThumbLoading = false;
+                        item.ThumbRequestId = 0;
+                    }
+                    return;
+                }
+
+                item.ThumbLoading = false;
+                if (result.HasImage) {
+                    item.S0 = result.Image;
+                }
+
+                if (result.IsTerminal) {
+                    item.ThumbLoaded = true;
+                }
+            }));
+        }
+
+        private CancellationToken GetThumbnailCancellationToken() {
+            lock (thumbnailCancellationSync) {
+                return thumbnailCancellation.Token;
+            }
+        }
+
+        private void ResetThumbnailScheduling() {
+            Interlocked.Increment(ref thumbnailRequestGeneration);
+            Interlocked.Exchange(ref thumbnailRequestId, 0);
+            lock (thumbnailCancellationSync) {
+                thumbnailCancellation.Cancel();
+                thumbnailCancellation = new CancellationTokenSource();
+            }
+            if (timer.IsEnabled) {
+                timer.Stop();
+            }
+        }
+
+        private void ResetThumbnailState(MyStruct item) {
+            if (item == null) {
+                return;
+            }
+
+            item.ThumbLoaded = false;
+            item.ThumbLoading = false;
+            item.ThumbRequestId = 0;
+            item.S0 = null;
         }
 
         private void ForScrollChanged(object sender, ScrollChangedEventArgs e) {
