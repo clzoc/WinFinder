@@ -377,10 +377,10 @@
                             <ColumnDefinition Width="0"/>
                         </Grid.ColumnDefinitions>
                         <Grid x:Name="Pane1Host" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Background="#FBFBFC">
-                            <controls:WorkspaceTabHost x:Name="Pane1Tabs" />
+                            <controls:WorkspacePane x:Name="Pane1" />
                         </Grid>
                         <Grid x:Name="Pane2Host" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Background="#FBFBFC" Visibility="Collapsed">
-                            <controls:WorkspaceTabHost x:Name="Pane2Tabs" />
+                            <controls:WorkspacePane x:Name="Pane2" />
                         </Grid>
                         <Border x:Name="PaneDivider"
                                 Grid.RowSpan="2"

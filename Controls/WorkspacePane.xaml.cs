@@ -116,8 +116,6 @@ namespace WinFinder.Controls {
         private string once = @"";
 
         public string CurrentPath => pwd;
-        public static string DefaultStartPath => GetDefaultStartPath();
-        public bool IsGridView => GridViewContainer != null && GridViewContainer.Visibility == Visibility.Visible;
 
         private static string GetDefaultStartPath() {
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

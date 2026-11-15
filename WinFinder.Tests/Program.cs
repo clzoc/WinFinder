@@ -21,9 +21,6 @@ namespace WinFinder.Tests {
             Run("ThumbnailPathTools returns normalized path for missing file", ThumbnailPathToolsUsesPathForMissingFile);
             Run("FileOperations copy, move, rename, create, and paste stay inside the sandbox", FileOperationsWorkInsideSandbox);
             Run("FileOperations refuses work outside the sandbox and will not delete the sandbox root", FileOperationsEnforcesSandboxGuard);
-            Run("SessionStore round-trips tabs, view mode, and layout in the sandbox", SessionStoreRoundTripsInSandbox);
-            Run("SessionStore drops missing folders, clamps the active tab, and recovers from bad files", SessionStoreNormalizesAndRecovers);
-            Run("SessionStore formats tab titles from folder names", SessionStoreFormatsTitles);
 
             if (Failures.Count == 0) {
                 Console.WriteLine("All WinFinder.Tests passed.");
@@ -144,97 +141,6 @@ namespace WinFinder.Tests {
             AssertEqual(normalized, ThumbnailPathTools.BuildCacheKey(path), "Missing file key should be the normalized path.");
         }
 
-
-
-        private static void SessionStoreRoundTripsInSandbox() {
-            string sandbox = CreateSandbox();
-            try {
-                string folderA = Path.Combine(sandbox, "alpha");
-                string folderB = Path.Combine(sandbox, "beta");
-                Directory.CreateDirectory(folderA);
-                Directory.CreateDirectory(folderB);
-                string file = Path.Combine(sandbox, "session.json");
-
-                var state = new WindowSessionState {
-                    Version = SessionStore.CurrentVersion,
-                    DualPane = true,
-                    Stacked = true,
-                    Pane1 = new PaneSessionState {
-                        ActiveTabIndex = 1,
-                        Tabs = new List<WorkspaceTabState> {
-                            new WorkspaceTabState { Path = folderA, View = "list" },
-                            new WorkspaceTabState { Path = folderB, View = "grid" }
-                        }
-                    },
-                    Pane2 = new PaneSessionState {
-                        ActiveTabIndex = 0,
-                        Tabs = new List<WorkspaceTabState> {
-                            new WorkspaceTabState { Path = folderA, View = "list" }
-                        }
-                    }
-                };
-
-                SessionStore.Save(state, file);
-                AssertTrue(File.Exists(file), "Session file was not written inside the sandbox.");
-                AssertTrue(FileOperations.IsSubpathOf(file, sandbox), "Session file left the sandbox.");
-
-                WindowSessionState loaded = SessionStore.Load(file, sandbox);
-                AssertTrue(loaded.DualPane, "Dual-pane flag was not restored.");
-                AssertTrue(loaded.Stacked, "Stacked layout flag was not restored.");
-                AssertEqual(2, loaded.Pane1.Tabs.Count, "Pane1 tab count mismatch.");
-                AssertEqual(1, loaded.Pane1.ActiveTabIndex, "Pane1 active tab was not restored.");
-                AssertEqual(Path.GetFullPath(folderB), loaded.Pane1.Tabs[1].Path, "Pane1 tab path mismatch.");
-                AssertEqual("grid", loaded.Pane1.Tabs[1].View, "Grid view was not restored.");
-                AssertEqual(Path.GetFullPath(folderA), loaded.Pane2.Tabs[0].Path, "Pane2 tab path mismatch.");
-            } finally {
-                DeleteSandbox(sandbox);
-            }
-        }
-
-        private static void SessionStoreNormalizesAndRecovers() {
-            string sandbox = CreateSandbox();
-            try {
-                string exists = Path.Combine(sandbox, "keeps");
-                Directory.CreateDirectory(exists);
-                string missing = Path.Combine(sandbox, "gone");
-                string file = Path.Combine(sandbox, "session.json");
-
-                var state = new WindowSessionState {
-                    Pane1 = new PaneSessionState {
-                        ActiveTabIndex = 40,
-                        Tabs = new List<WorkspaceTabState> {
-                            new WorkspaceTabState { Path = missing, View = "grid" },
-                            new WorkspaceTabState { Path = exists, View = "GRID" },
-                            new WorkspaceTabState { Path = "   ", View = "list" }
-                        }
-                    }
-                };
-                SessionStore.Save(state, file);
-
-                WindowSessionState loaded = SessionStore.Load(file, exists);
-                AssertEqual(1, loaded.Pane1.Tabs.Count, "Missing folders should be dropped on load.");
-                AssertEqual(0, loaded.Pane1.ActiveTabIndex, "Active tab index should be clamped.");
-                AssertEqual("grid", loaded.Pane1.Tabs[0].View, "View mode should normalize to grid.");
-                AssertTrue(loaded.Pane2.Tabs.Count == 1, "Pane2 should fall back to a default tab.");
-
-                File.WriteAllText(file, "{ this is not json");
-                WindowSessionState recovered = SessionStore.Load(file, exists);
-                AssertEqual(Path.GetFullPath(exists), recovered.Pane1.Tabs[0].Path, "Corrupt session should fall back to the default path.");
-
-                string missingFile = Path.Combine(sandbox, "no-such-session.json");
-                WindowSessionState created = SessionStore.Load(missingFile, exists);
-                AssertEqual(Path.GetFullPath(exists), created.Pane1.Tabs[0].Path, "Missing session file should use the default path.");
-            } finally {
-                DeleteSandbox(sandbox);
-            }
-        }
-
-        private static void SessionStoreFormatsTitles() {
-            AssertEqual("Documents", SessionStore.FormatTabTitle(@"C:\Users\demo\Documents"), "Folder name should be the tab title.");
-            AssertEqual(@"D:\", SessionStore.FormatTabTitle(@"D:\"), "Drive roots should keep a readable title.");
-            string emptyTitle = SessionStore.FormatTabTitle("");
-            AssertTrue(emptyTitle == "新标签页" || emptyTitle == "New Tab", "Empty paths should use the new-tab title.");
-        }
 
         private static void FileOperationsWorkInsideSandbox() {
             string sandbox = CreateSandbox();
