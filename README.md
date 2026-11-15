@@ -48,7 +48,7 @@ msbuild WinFinder.sln
 - [x] 基础文件操作：复制 / 剪切 / 粘贴、重命名、删除（界面走回收站，测试为永久删除）、新建文件夹，以及右键菜单与快捷键
 - [ ] 独立缩略图服务：摆脱系统编解码器、K-Lite Codec Pack 与 HEIC 扩展依赖
 - [ ] 区域选择增强（已有框选，需继续完善）
-- [ ] 标签页浏览与会话恢复
+- [x] 标签页浏览与会话恢复（每栏多标签，关闭时写入 %AppData%/WinFinder/session.json）
 - [ ] 空格键快速预览
 - [ ] Miller 列视图
 - [ ] 正则批量重命名 / File Automator

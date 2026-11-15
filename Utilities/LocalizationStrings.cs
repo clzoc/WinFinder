@@ -60,5 +60,11 @@ namespace WinFinder.Utilities {
         public static string ConfirmDeleteMany(int count) {
             return IsChinese ? $"确定要将这 {count} 个项目移到回收站吗？" : $"Move these {count} items to the Recycle Bin?";
         }
+
+        public static string MenuNewTab => IsChinese ? "新建标签页" : "New Tab";
+        public static string MenuDuplicateTab => IsChinese ? "复制标签页" : "Duplicate Tab";
+        public static string MenuCloseTab => IsChinese ? "关闭标签页" : "Close Tab";
+        public static string MenuCloseOtherTabs => IsChinese ? "关闭其他标签页" : "Close Other Tabs";
+        public static string NewTabTitle => IsChinese ? "新标签页" : "New Tab";
     }
 }

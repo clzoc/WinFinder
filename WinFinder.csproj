@@ -261,6 +261,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\ThemedSvgIcon.cs" />
+    <Compile Include="Controls\WorkspaceTabHost.cs" />
     <Compile Include="Controls\WorkspacePane.xaml.cs">
       <DependentUpon>WorkspacePane.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -298,6 +299,7 @@
     <Compile Include="Backend\ThumbnailModels.cs" />
     <Compile Include="Backend\ThumbnailService.cs" />
     <Compile Include="Backend\FileOperations.cs" />
+    <Compile Include="Backend\SessionState.cs" />
     <Compile Include="ThemePalette.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

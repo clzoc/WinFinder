@@ -7,9 +7,11 @@ using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Windows.Data;
 using System.Windows.Media;
 using WinFinder.Controls;
+using WinFinder.Backend;
 using WinFinder.Utilities;
 
 namespace WinFinder {    
@@ -19,6 +21,9 @@ namespace WinFinder {
         private bool paneStacked = false;
         private bool isDualPaneEnabled = false;
         private WorkspacePane activePane;
+        private readonly DispatcherTimer sessionSaveTimer = new DispatcherTimer {
+            Interval = TimeSpan.FromMilliseconds(500)
+        };
         private int isZoom = 0;
         private readonly string[] zoomIcons = { "/icon/Maximize_Button_Hover_M.svg", "/icon/Maximize_Button_Hover_Zoom_M.svg" };
         private const double SidebarItemHeight = 35;
@@ -88,11 +93,16 @@ namespace WinFinder {
 
             ApplySystemTheme();
 
-            ApplyPaneLayout();
-            SetActivePane(Pane1);
+            sessionSaveTimer.Tick += SessionSaveTimer_Tick;
+            PreviewKeyDown += MainWindow_PreviewKeyDown;
 
-            Pane1.PaneActivated += (_, __) => SetActivePane(Pane1);
-            Pane2.PaneActivated += (_, __) => SetActivePane(Pane2);
+            ApplyPaneLayout();
+            AttachTabHost(Pane1Tabs);
+            AttachTabHost(Pane2Tabs);
+            RestoreOrInitializeSession();
+            if (Pane1Tabs != null) {
+                SetActivePane(Pane1Tabs.ActivePane);
+            }
         }
 
         private void ContentView(object sender, RoutedEventArgs e) {
@@ -423,11 +433,11 @@ namespace WinFinder {
         }
 
         private void ApplyPanePalette() {
-            if (Pane1 != null) {
-                Pane1.ApplyTheme(palette);
+            if (Pane1Tabs != null) {
+                Pane1Tabs.ApplyTheme(palette);
             }
-            if (Pane2 != null) {
-                Pane2.ApplyTheme(palette);
+            if (Pane2Tabs != null) {
+                Pane2Tabs.ApplyTheme(palette);
             }
             if (Pane1Host != null) {
                 Pane1Host.Background = palette.PaneBackground;
@@ -440,11 +450,13 @@ namespace WinFinder {
         private void TogglePaneLayout_Click(object sender, RoutedEventArgs e) {
             paneStacked = !paneStacked;
             ApplyPaneLayout();
+            ScheduleSessionSave();
         }
 
         private void ToggleDualPane_Click(object sender, RoutedEventArgs e) {
             isDualPaneEnabled = !isDualPaneEnabled;
             ApplyPaneLayout();
+            ScheduleSessionSave();
         }
 
         private void ApplyPaneLayout() {
@@ -466,8 +478,8 @@ namespace WinFinder {
                 Grid.SetColumnSpan(Pane2Host, 1);
 
                 Pane2Host.Visibility = Visibility.Collapsed;
-                if (activePane == Pane2) {
-                    SetActivePane(Pane1);
+                if (Pane2Tabs != null && Pane2Tabs.Contains(activePane) && Pane1Tabs != null) {
+                    SetActivePane(Pane1Tabs.ActivePane);
                 }
             } else if (paneStacked) {
                 PaneContainer.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
@@ -580,6 +592,8 @@ namespace WinFinder {
         }
 
         private void MainWindow_Closed(object sender, EventArgs e) {
+            sessionSaveTimer.Stop();
+            SaveSession();
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
         }
 
@@ -634,6 +648,107 @@ namespace WinFinder {
             useSystemTheme = false;
             ApplyTheme(ThemeMode.Dark);
             UpdateModeButtonsAppearance();
+        }
+
+
+        private void AttachTabHost(WorkspaceTabHost host) {
+            if (host == null) {
+                return;
+            }
+
+            host.ActivePaneChanged += (_, __) => SetActivePane(host.ActivePane);
+            host.HostActivated += (_, __) => SetActivePane(host.ActivePane);
+            host.SessionChanged += (_, __) => ScheduleSessionSave();
+        }
+
+        private WorkspaceTabHost GetActiveTabHost() {
+            if (Pane2Tabs != null && Pane2Tabs.Contains(activePane)) {
+                return Pane2Tabs;
+            }
+            return Pane1Tabs;
+        }
+
+        private void RestoreOrInitializeSession() {
+            WindowSessionState state = SessionStore.Load(SessionStore.DefaultFilePath);
+            isDualPaneEnabled = state.DualPane;
+            paneStacked = state.Stacked;
+            if (Pane1Tabs != null) {
+                Pane1Tabs.RestoreState(state.Pane1);
+            }
+            if (Pane2Tabs != null) {
+                Pane2Tabs.RestoreState(state.Pane2);
+            }
+            ApplyPaneLayout();
+            ApplyPanePalette();
+        }
+
+        private void ScheduleSessionSave() {
+            sessionSaveTimer.Stop();
+            sessionSaveTimer.Start();
+        }
+
+        private void SessionSaveTimer_Tick(object sender, EventArgs e) {
+            sessionSaveTimer.Stop();
+            SaveSession();
+        }
+
+        private void SaveSession() {
+            try {
+                var state = new WindowSessionState {
+                    Version = SessionStore.CurrentVersion,
+                    DualPane = isDualPaneEnabled,
+                    Stacked = paneStacked,
+                    Pane1 = Pane1Tabs != null ? Pane1Tabs.CaptureState() : null,
+                    Pane2 = Pane2Tabs != null ? Pane2Tabs.CaptureState() : null
+                };
+                SessionStore.Save(state, SessionStore.DefaultFilePath);
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine("Failed to save session: " + ex.Message);
+            }
+        }
+
+        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.OriginalSource is TextBox || e.OriginalSource is PasswordBox) {
+                return;
+            }
+
+            bool ctrl = (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+            bool shift = (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
+            if (!ctrl) {
+                return;
+            }
+
+            WorkspaceTabHost host = GetActiveTabHost();
+            if (host == null) {
+                return;
+            }
+
+            if (e.Key == Key.T && shift) {
+                host.DuplicateActiveTab();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.T) {
+                host.NewTab();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.W) {
+                host.CloseActiveTab();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.Tab) {
+                if (shift) {
+                    host.ActivatePrevious();
+                } else {
+                    host.ActivateNext();
+                }
+                e.Handled = true;
+            }
         }
 
         public string Window_Corner(double height, double width, double radius, double bias) {
