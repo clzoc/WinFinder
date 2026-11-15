@@ -285,6 +285,10 @@
       <DependentUpon>WorkspacePane.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\WorkspacePane.FileOperations.cs">
+      <DependentUpon>WorkspacePane.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Backend\ExplorerModels.cs" />
     <Compile Include="Backend\ExplorerProviders.cs" />
     <Compile Include="Backend\ExplorerBackend.cs" />
@@ -293,6 +297,7 @@
     <Compile Include="Backend\ThumbnailClientService.cs" />
     <Compile Include="Backend\ThumbnailModels.cs" />
     <Compile Include="Backend\ThumbnailService.cs" />
+    <Compile Include="Backend\FileOperations.cs" />
     <Compile Include="ThemePalette.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

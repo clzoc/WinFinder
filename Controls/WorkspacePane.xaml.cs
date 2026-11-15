@@ -195,6 +195,9 @@ namespace WinFinder.Controls {
                     RefreshBreadcrumbPopupChrome();
                 };
             }
+            Focusable = true;
+            PreviewKeyDown += WorkspacePane_PreviewKeyDown;
+            PreviewMouseRightButtonUp += WorkspacePane_PreviewMouseRightButtonUp;
         }
 
         private void OnPaneMouseDown(object sender, MouseButtonEventArgs e) {
